@@ -1,0 +1,120 @@
+.wrapper {
+  position: absolute;
+  width: 1328px;
+  height: 397px;
+  top: 131px;
+  left: 296px;
+  padding: 20px;
+  
+}
+.show {
+  box-sizing: border-box;
+  /* Auto layout */
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 16px 10px;
+  gap: 8px;
+
+  position: absolute;
+  width: 157px;
+  height: 43px;
+  right: 0px;
+  top: 6px;
+
+  /* Dark/16% */
+  border: 1px solid #292929;
+  border-radius: 4px;
+
+  &__text {
+    color: white;
+    width: 93px;
+    height: 25px;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 25px;
+  }
+}
+
+.text {
+  font-size: 40px;
+  font-weight:500;
+  color: #DBDBDB;
+}
+
+.group {
+  position: absolute;
+  display: flex;
+  width: 1328px;
+  height: 318px;
+  left: 0px;
+  top: 79px;
+
+  &__img1 {
+    width:646px;
+    height:318px;
+    top:79px;
+    border-radius: 16px;
+    gap: 8px;
+    background: url(../../shared/media/Frame1.png), radial-gradient(103.51% 562.52% at 98.99% 100%, #A0FF55 20%, rgba(36, 69, 9, 0.33) 100%);
+    filter: saturate(120%);
+  }
+
+  &__img2 {
+    width: 646px;
+    height: 318px;
+    left: 682px;
+    top: 79px;
+    background: url(../../shared/media/Frame2.png), radial-gradient(103.51% 562.52% at 98.99% 100%, #FF5569 20%, rgba(69, 9, 16, 0.33) 100%);
+    filter: saturate(120%);
+    margin-left:36px;
+  }
+}
+
+.market {
+  position: absolute;
+  width: 1328px;
+  height: 381px;  
+  top: 576px;
+  margin-top: -100px;
+
+}
+
+.nfts {
+  position: absolute;
+  width: 1328px;
+  height: 302px;
+  left: 0px;
+  top: 79px;
+  display: flex;
+  column-gap: 64px;
+
+  &__nft1 {
+    width: 208px;
+    height: 208px;
+    background: url(../../shared/media/nft1.png);
+  }
+  &__nft2 {
+    width: 208px;
+    height: 208px;
+    background: url(../../shared/media/nft2.png);
+  }
+  &__nft3 {
+    width: 208px;
+    height: 208px;
+    background: url(../../shared/media/nft3.png);
+  }
+  &__nft4 {
+    width: 208px;
+    height: 208px;
+    background: url(../../shared/media/nft4.png);
+  }
+  &__nft5 {
+    width: 208px;
+    height: 208px;
+    background: url(../../shared/media/nft5.png);
+  } 
+}
