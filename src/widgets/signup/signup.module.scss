@@ -1,0 +1,93 @@
+.wrapper {
+  position: relative;
+  background-color: var(--color-log-cabine);
+  width: 100%;
+}
+
+.close {
+  position: absolute;
+  width: 104px;
+  height: 104px;
+  left: 1520px;
+  top: 160px;
+}
+
+.icon {
+  position: absolute;
+  left: 14.65%;
+  right: 35.35%;
+  top: 50%;
+  bottom: 0%;
+
+  border: 4px solid #DBDBDB;
+  transform: rotate(-45deg);
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px;
+  gap: 56px;
+
+  position: absolute;
+  width: 597px;
+  height: 172px;
+  left: 662px;
+  top: 378px;
+}
+
+.text {
+  
+  width: 597px;
+  height: 55px;
+
+  font-family: 'TT Travels';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 40px;
+  line-height: 138.4%;
+
+
+  text-align: center;
+
+
+  color: #DBDBDB;
+}
+.autorize {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 16px 10px;
+  gap: 8px;
+
+  width: 512px;
+  height: 61px;
+
+  /* Accent Neutral */
+
+  background: #369636;
+  border-radius: 6px;
+
+  &__icon {
+    width: 22px;
+    height: 25px;
+  }
+
+  &__text {
+    width: 223px;
+    height: 25px;
+
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 25px;
+
+    color: #DBDBDB;
+  }
+  
+
+}
+

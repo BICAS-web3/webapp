@@ -1,18 +1,17 @@
 import { FC, PropsWithChildren } from "react"
+import { Outlet } from "react-router-dom";
 
 import { Header } from "../header/Header"
 import { Footer } from "../footer/Footer";
-
 import '../../shared/styles/index.scss'
 
 export interface LayoutProps extends PropsWithChildren {}
 
 export const Layout: FC<LayoutProps> = props => {
-    const { children } = props;
     return(
         <>
             <Header/>
-            <main>{children}</main>
+            <main><Outlet/></main>
             <Footer />
         </>
     )

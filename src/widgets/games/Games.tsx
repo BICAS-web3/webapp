@@ -1,6 +1,6 @@
 import { FC } from "react"
 
-import { Container } from '../../shared/ui/container/Container'
+
 import styles from './games.module.scss';
 
 export const Games: FC = () => {
@@ -14,7 +14,9 @@ export const Games: FC = () => {
         </button>
         <span className={styles.text}>Mini-Games</span>
         <div className={styles.group}>
-          <div className={styles.group__img1}></div>
+          <form action="/DunkinCaps">
+            <button className={styles.group__img1}></button>
+          </form>
           <div className={styles.group__img2}></div>
         </div>
         <div className={styles.market}>
