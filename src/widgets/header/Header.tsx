@@ -1,10 +1,18 @@
 import { FC } from "react"
+import { useAppDispatch, useAppSelector } from "../../redux_store/hooks";
 
 
 import styles from './header.module.scss';
+import { changeState } from "../../redux_store/pageReducer";
 
 
 export const Header: FC = () => {
+
+    let objects = useAppSelector(state => state.pageReducer.objects);
+    let status = useAppSelector(state => state.pageReducer.status);
+
+    const dispatch = useAppDispatch();
+
     return(
         <header className={styles.wrapper}>
                 <div className={styles.content}>
@@ -19,9 +27,13 @@ export const Header: FC = () => {
                         </button>  
                     </form>
                     <nav className={styles.navigation}>
-                        <button className={styles.link}>Home</button>
-                        <button className={styles.link}>Mini-Games</button>
-                        <button className={styles.link}>NFT Market</button>
+                        {objects.map((elements:string, index:number) => {
+                            return(
+                                <button key={index} className={styles[status[index]]} onClick={() => {
+                                    dispatch(changeState(index)); 
+                                }}>{elements}</button>
+                            )
+                            })}
                     </nav>
                     <div className={styles.btn_container}>
                         <button className={styles.login}>

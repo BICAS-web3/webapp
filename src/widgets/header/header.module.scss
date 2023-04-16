@@ -5,6 +5,8 @@
 
 .wrapper {
     width: 1920px;
+    background: #1A1A1AB2;
+
     left: 0;
     top: 0;
     position: fixed;
@@ -30,14 +32,34 @@
     align-items: center;
     column-gap: 56px;
     padding: 25px 0;
-
 }
 
 .link {
     position: relative;
     font-size: 20px;
     line-height: 27px;
-    color: var(--color-alto);
+    color:#999999;
+    color: var(--color-alto);   
+}
+
+.active {
+    position: relative;
+    font-size: 20px;
+    line-height: 27px;
+    color:#DBDBDB;
+    
+}
+
+.inactive {
+    position: relative;
+    font-size: 20px;
+    line-height: 27px;
+    color:#999999;
+    &:hover {
+        color: #DBDBDB;
+        transition:  0.6s;
+    }
+     
 }
 .logo {
     margin-left: 16px;
@@ -62,6 +84,7 @@
     left: 32px;
     top: calc(50% - 33px/2);
     display: flex;
+    margin-left: 32px;
 
 }
 
@@ -76,6 +99,7 @@
     height: 43px;
     right: 32px;
     top: 20px;
+    margin-right: 32px;
 
 }
 
@@ -116,8 +140,8 @@
     }
 
     &:hover {
-        color: var(--color-dove-gray);
-        background: var(--color-cod-gray);
+        background: linear-gradient(0deg, rgba(0, 204, 0, 0.4), rgba(0, 204, 0, 0.4)), #369636;
+        transition: background-color 0.6s;
     }
 }
 
@@ -136,6 +160,10 @@
         font-size: 18px;
         line-height: 25px;
         color: #666666;
+    }
+    &:hover {
+        background: #3D3D3D;
+        transition: background-color 0.6s;
     }
 }
 

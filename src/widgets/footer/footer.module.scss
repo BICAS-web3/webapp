@@ -1,5 +1,7 @@
 .wrapper {
   position: absolute;
+  background: #1A1A1AB2;
+
   width: 1920px;
   height: 108px;
   left: 0px;
@@ -84,6 +86,11 @@
       line-height: 25px;
 
       color: #666666;
+
+      &:hover {
+        background: #3D3D3D;
+        transition: background-color 0.6s;
+      }
     }
   }
   
