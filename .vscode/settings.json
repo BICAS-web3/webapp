@@ -1,0 +1,15 @@
+{
+	"editor.tabSize": 4,
+	"files.eol": "\n",
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.codeActionsOnSave": {
+		"source.organizeImports": false,
+		"source.fixAll.eslint": true,
+		"source.fixAll.stylelint": true
+	},
+	"scss.validate": false,
+	"css.validate": false,
+	"less.validate": false,
+	"stylelint.validate": ["css", "less", "postcss", "scss", "vue"]
+}
