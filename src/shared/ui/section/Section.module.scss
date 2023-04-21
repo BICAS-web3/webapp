@@ -1,0 +1,29 @@
+._ {
+    padding: 24px 0;
+}
+
+.head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.meta {
+    overflow: hidden;
+    padding-right: 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.extra {
+    flex: none;
+}
+
+.title {
+    color: var(--color-gallery);
+    font-family: var(--font-tt-travels);
+    font-size: 40px;
+    font-weight: 500;
+    line-height: 52px;
+}

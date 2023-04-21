@@ -1,0 +1,13 @@
+._ {
+    display: inline-flex;
+    flex-shrink: none;
+    align-items: center;
+    justify-content: center;
+    color: currentColor;
+
+    & svg {
+        width: 1em;
+        height: 1em;
+        color: currentColor;
+    }
+}

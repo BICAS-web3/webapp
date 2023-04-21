@@ -1,0 +1,62 @@
+._ {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    appearance: none;
+    background-color: var(--background);
+    color: var(--color);
+    cursor: pointer;
+    font-family: var(--font-manrope);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    transition: background-color .3s ease;
+    user-select: none;
+    vertical-align: middle;
+    white-space: nowrap;
+
+    &_scheme {
+        &_apple {
+            --color: var(--color-alto);
+            --background: var(--color-apple);
+            --background-hover: var(--color-green);
+            --border-color: transparent;
+        }
+
+        &_mine-shaft {
+            --color: var(--color-dove-gray);
+            --background: transparent;
+            --background-hover: transparent;
+            --border-color: var(--color-mine-shaft);
+        }
+    }
+
+    &:is(:hover) {
+        background-color: var(--background-hover);
+    }
+
+    &:has(.icon_left, .content) {
+        .icon_left {
+            margin-right: 8px;
+        }
+    }
+
+    &:has(.icon_right, .content) {
+        .icon_right {
+            margin-left: 8px;
+        }
+    }
+}
+
+.content {
+    display: inline-flex;
+    align-items: center;
+}
+
+.icon {
+    display: inline-flex;
+    font-size: 24px;
+}
