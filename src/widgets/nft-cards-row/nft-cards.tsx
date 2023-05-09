@@ -8,7 +8,7 @@ import { Button } from '@/shared/ui/button';
 import { LongArrowRightIcon } from '@/shared/ui/icons/LongArrowRight';
 import { Section } from '@/shared/ui/section';
 
-import s from './NFTCards.module.scss';
+import s from './nft-cards.module.scss';
 
 export interface NFTCardsProps {}
 
