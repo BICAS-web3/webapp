@@ -5,11 +5,11 @@
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.codeActionsOnSave": {
 		"source.organizeImports": false,
-		"source.fixAll.eslint": true,
-		"source.fixAll.stylelint": true
+		"source.fixAll.stylelint": true,
+		"source.fixAll.eslint": true
 	},
 	"scss.validate": false,
 	"css.validate": false,
 	"less.validate": false,
-	"stylelint.validate": ["css", "less", "postcss", "scss", "vue"]
+	"stylelint.validate": ["css", "less", "postcss", "scss"]
 }

@@ -1,1 +1,1 @@
-export * from './NftCards';
+export { NFTCards as NFTCardsRow } from './NFTCards';

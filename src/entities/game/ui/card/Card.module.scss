@@ -1,3 +1,5 @@
+@use '@/shared/styles/mixins/breakpoints.scss';
+
 ._ {
     position: relative;
     overflow: hidden;
@@ -5,6 +7,11 @@
     height: 300px;
     border-radius: 16px;
     background: radial-gradient(103.51% 562.52% at 98.99% 100%, var(--from) 0%, var(--to) 100%);
+    transition: .3s ease;
+
+    &:hover {
+        background-color: var(--to);
+    }
 }
 
 .skeleton {
@@ -18,10 +25,36 @@
 }
 
 .content {
+    position: relative;
+    z-index: 1;
     display: flex;
+    height: 100%;
     flex-direction: column;
     justify-content: space-between;
     padding: 40px 50px;
+}
+
+.overlaylink {
+    &::before {
+        position: absolute;
+        z-index: 0;
+        top: 0px;
+        left: 0px;
+        display: block;
+        width: 100%;
+        height: 100%;
+        content: '';
+        cursor: inherit;
+    }
+}
+
+.navigationicon {
+    position: relative;
+    transition: .3s ease;
+}
+
+._:hover .navigationicon {
+    transform: translateX(50%);
 }
 
 .title {
@@ -29,33 +62,58 @@
     flex-shrink: 0;
     align-items: center;
     margin-bottom: 16px;
-    color: var(--color-gallery);
-    font-family: var(--font-tt-travels);
-    font-size: 36px;
-    font-weight: 600;
-    line-height: 42px;
+    column-gap: 12px;
 }
 
 .description {
-    max-width: 300px;
-    color: var(--color-alto);
-    font-family: var(--font-manrope);
-    font-size: 18px;
-    line-height: 24px;
+    max-width: min(85%, 300px);
 }
 
 .image {
     position: absolute;
     right: 0;
     bottom: 0;
-    width: 50%;
-    height: auto;
+    width: auto;
+    height: 110%;
     object-fit: contain;
     opacity: 0;
+    pointer-events: none;
     transform: translate(25%, 5%);
     transition: opacity;
+    transition: .3s ease;
 
     &_loaded {
         opacity: 1;
+    }
+}
+
+@include breakpoints.max-width-xl {
+    ._ {
+        height: 260px;
+    }
+}
+
+@include breakpoints.max-width-lg {
+    ._ {
+        height: 220px;
+    }
+
+    .content {
+        padding: 28px 24px 32px;
+    }
+}
+
+@include breakpoints.max-width-md {
+    ._ {
+        max-width: 100%;
+        height: 200px;
+    }
+
+    .content {
+        padding: 24px 16px 24px 24px;
+    }
+
+    .title {
+        margin-bottom: 8px;
     }
 }

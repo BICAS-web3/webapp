@@ -3,20 +3,41 @@
     align-items: center;
     justify-content: center;
     padding: 8px 16px;
-    border: 1px solid var(--border-color);
+    border: 1px solid transparent;
     border-radius: 6px;
     appearance: none;
-    background-color: var(--background);
     color: var(--color);
+    column-gap: 8px;
     cursor: pointer;
     font-family: var(--font-manrope);
     font-size: 18px;
     font-weight: 500;
     line-height: 24px;
-    transition: background-color .3s ease;
+    transition: background-color .25s ease;
     user-select: none;
     vertical-align: middle;
     white-space: nowrap;
+
+    &:is(:hover) {
+        border-color: transparent;
+        background-color: var(--background-hover);
+    }
+
+    &_variant {
+        &_solid {
+            border-color: transparent;
+            background: var(--background);
+        }
+
+        &_outline {
+            border-color: var(--border-color);
+            background: transparent;
+        }
+
+        &_ghost {
+            background: transparent;
+        }
+    }
 
     &_scheme {
         &_apple {
@@ -28,25 +49,16 @@
 
         &_mine-shaft {
             --color: var(--color-dove-gray);
-            --background: transparent;
-            --background-hover: transparent;
+            --background: var(--color-mine-shaft-ligther);
+            --background-hover: var(--color-mine-shaft);
             --border-color: var(--color-mine-shaft);
         }
-    }
 
-    &:is(:hover) {
-        background-color: var(--background-hover);
-    }
-
-    &:has(.icon_left, .content) {
-        .icon_left {
-            margin-right: 8px;
-        }
-    }
-
-    &:has(.icon_right, .content) {
-        .icon_right {
-            margin-left: 8px;
+        &_stilleto {
+            --color: var(--color-alto);
+            --background: var(--color-stilleto);
+            --background-hover: var(--color-rof-terracotta);
+            --border-color: transparent;
         }
     }
 }
@@ -58,5 +70,5 @@
 
 .icon {
     display: inline-flex;
-    font-size: 24px;
+    font-size: 1.2rem;
 }

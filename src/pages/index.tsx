@@ -1,10 +1,11 @@
-import { Inter } from 'next/font/google';
 import Head from 'next/head';
 
 import { Footer } from '@/widgets/footer';
-import { GameCards } from '@/widgets/game-cards-row';
+import { GameCardsRow } from '@/widgets/game-cards-row';
 import { Header } from '@/widgets/header';
-import { NftCards } from '@/widgets/nft-cards-row';
+import { NFTCardsRow } from '@/widgets/nft-cards-row';
+
+import { Container } from '@/shared/ui/container';
 
 export default function Home() {
 	return (
@@ -13,9 +14,15 @@ export default function Home() {
 				<title>NFT Play | Home page</title>
 			</Head>
 			<Header />
-			<main>
-				<GameCards />
-				<NftCards />
+			<main className='layout'>
+				<div className='layout__content'>
+					<Container>
+						<GameCardsRow />
+					</Container>
+					<Container>
+						<NFTCardsRow />
+					</Container>
+				</div>
 			</main>
 			<Footer />
 		</>

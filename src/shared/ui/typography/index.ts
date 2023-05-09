@@ -1,0 +1,1 @@
+export { getTypography } from './lib';

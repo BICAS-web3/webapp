@@ -1,0 +1,1 @@
+export { OneVsOne } from './OnveVsOne';

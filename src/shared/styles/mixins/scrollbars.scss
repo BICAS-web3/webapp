@@ -1,0 +1,14 @@
+@mixin brand-scrollbar {
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-radius: 4px;
+        background: var(--color-mine-shaft);
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+}

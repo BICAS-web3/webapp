@@ -1,4 +1,6 @@
+@use '@/shared/styles/mixins/blur.scss';
+
 ._ {
     padding: 32px 0;
-    background: var(--color-log-cabin);
+    @include blur.blur;
 }

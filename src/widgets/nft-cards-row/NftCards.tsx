@@ -1,45 +1,39 @@
-import cn from 'classnames';
+import useEmblaCarousel from 'embla-carousel-react';
 import { FC } from 'react';
-import { useBlazeSlider } from 'react-blaze-slider';
 
 import { NFTCard } from '@/entities/nft/ui/molecules/card';
 
 import { nfts } from '@/shared/data/nfts';
 import { Button } from '@/shared/ui/button';
-import { ArrowRightIcon } from '@/shared/ui/icons/ArrowRight';
+import { LongArrowRightIcon } from '@/shared/ui/icons/LongArrowRight';
 import { Section } from '@/shared/ui/section';
 
-import s from './NftCards.module.scss';
+import s from './NFTCards.module.scss';
 
-export interface NftCardsProps {}
+export interface NFTCardsProps {}
 
-export const NftCards: FC<NftCardsProps> = props => {
+export const NFTCards: FC<NFTCardsProps> = props => {
 	const {} = props;
 
-	const ref = useBlazeSlider({
-		all: {
-			slidesToShow: 5,
-			slidesToScroll: 5,
-		},
-	});
+	const [ref] = useEmblaCarousel({ align: 'start' });
 
 	return (
 		<Section
 			title='NFT Market'
 			extra={
-				<Button variant='outline' colorScheme='mine-shaft' rightIcon={<ArrowRightIcon />}>
-					Show more
+				<Button variant='outline' colorScheme='mine-shaft' rightIcon={<LongArrowRightIcon />}>
+					More
 				</Button>
 			}
 		>
-			<div className={cn(s._, 'blaze-slider')} ref={ref}>
-				<div className='blaze-container'>
-					<div className='blaze-track-container'>
-						<div className='blaze-track'>
-							{nfts.map(nft => (
-								<NFTCard key={nft.id} {...nft} />
-							))}
-						</div>
+			<div className={s._}>
+				<div className='embla' ref={ref}>
+					<div className='embla__container'>
+						{nfts.map(nft => (
+							<div key={nft.id} className='embla__slide'>
+								<NFTCard {...nft} />
+							</div>
+						))}
 					</div>
 				</div>
 			</div>

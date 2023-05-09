@@ -1,29 +1,63 @@
+@use '@/shared/styles/mixins/breakpoints.scss';
+
 ._ {
+    display: flex;
+    min-width: 0;
+    max-width: 100%;
+    flex-direction: column;
+    flex-shrink: 0;
     padding: 24px 0;
 }
 
 .head {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     margin-bottom: 24px;
 }
 
+.before {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 32px;
+}
+
 .meta {
+    display: flex;
     overflow: hidden;
-    padding-right: 16px;
+    flex-grow: 1;
+    justify-content: space-between;
+    column-gap: 16px;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.extra {
-    flex: none;
+.title {
+    overflow: hidden;
+
+    &> {
+        text-overflow: ellipsis;
+    }
 }
 
-.title {
-    color: var(--color-gallery);
-    font-family: var(--font-tt-travels);
-    font-size: 40px;
-    font-weight: 500;
-    line-height: 52px;
+.extra {
+    flex: none;
+    margin-left: auto;
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+}
+
+@include breakpoints.max-width-md {
+    .head {
+        flex-direction: column;
+        align-items: flex-start;
+        row-gap: 16px;
+    }
+
+    .meta {
+        width: 100%;
+    }
 }

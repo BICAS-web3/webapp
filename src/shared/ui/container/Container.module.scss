@@ -1,4 +1,14 @@
+@use '@/shared/styles/mixins/breakpoints.scss';
+
 ._ {
-    width: 1328px;
+    width: 100%;
+    max-width: 1400px;
+    padding: 0 20px;
     margin: 0 auto;
+}
+
+@include breakpoints.max-width-xl {
+    ._ {
+        max-width: 1024px;
+    }
 }

@@ -3,6 +3,8 @@ import { ReactElement, forwardRef } from 'react';
 
 import { PropsOf } from '@/shared/types/props';
 
+import { getTypography } from '../typography';
+
 import s from './Button.module.scss';
 
 type Variant = 'solid' | 'outline' | 'ghost';
@@ -41,7 +43,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>((props, ref) =>
 	return (
 		<button ref={ref} className={composedClassName} onClick={handleClick} {...rest}>
 			{!!leftIcon && <span className={cn(s.icon, s.icon_left)}>{leftIcon}</span>}
-			<span className={s.content}>{children}</span>
+			<span className={cn(s.content, getTypography({ variant: 'text', level: 2, color: 'inherit' }))}>
+				{children}
+			</span>
 			{!!rightIcon && <span className={cn(s.icon, s.icon_right)}>{rightIcon}</span>}
 		</button>
 	);

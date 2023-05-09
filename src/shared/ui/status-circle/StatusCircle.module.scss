@@ -1,0 +1,43 @@
+._ {
+    position: relative;
+    flex: none;
+}
+
+.circle {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    width: 125%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    transform: translate(-50%, -50%);
+
+    &_status {
+        &_offline {
+            --status-color: var(--color-emperor);
+        }
+
+        &_online {
+            --status-color: var(--color-sapphire);
+        }
+
+        &_playing {
+            --status-color: var(--color-apple);
+        }
+    }
+
+    &_loading {
+        animation: rotate 3s linear infinite;
+    }
+}
+
+@keyframes rotate {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}

@@ -1,1 +1,1 @@
-export * from './GameCards';
+export { GameCards as GameCardsRow } from './GameCards';

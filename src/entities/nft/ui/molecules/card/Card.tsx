@@ -5,6 +5,7 @@ import { ReactElement, forwardRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
 import { PropsOf } from '@/shared/types/props';
+import { getTypography } from '@/shared/ui/typography';
 
 import s from './Card.module.scss';
 
@@ -36,11 +37,11 @@ export const Card = forwardRef<HTMLDivElement, CardProps>((props, ref) => {
 			</div>
 			<div className={s.details}>
 				<div className={s.topline}>
-					<span className={s.title}>{name}</span>
-					<span className={s.hash}>{hash}</span>
+					<span className={cn(s.title, getTypography({ variant: 'heading', level: 5 }))}>{name}</span>
+					<span className={getTypography({ variant: 'heading', level: 5 })}>{hash}</span>
 				</div>
 				<div className={s.bottomline}>
-					<span className={s.price}>{price}</span>
+					<span className={cn(s.price, getTypography({ variant: 'caption', level: 2 }))}>{price} ETH</span>
 					{!!context && context}
 				</div>
 			</div>

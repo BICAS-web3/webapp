@@ -1,18 +1,22 @@
+@use '@/shared/styles/mixins/blur.scss';
+@use '@/shared/styles/mixins/breakpoints.scss';
+
 ._ {
     position: fixed;
     z-index: 10;
     top: 0;
     right: 0;
     left: 0;
-    padding: 20px 32px;
+    display: flex;
+    height: var(--size-header-height);
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
     background: #090B09;
     font-family: var(--font-manrope);
     transition: transform .3s ease;
-}
 
-.inner {
-    display: flex;
-    justify-content: space-between;
+    @include blur.blur();
 }
 
 .logo {
@@ -63,9 +67,6 @@
 
 .link {
     color: var(--color-dusty-gray);
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 28px;
     transition: color .3s ease;
 
     &:is(:hover) {
@@ -73,9 +74,20 @@
     }
 }
 
-@supports ((-webkit-backdrop-filter:none) or (backdrop-filter:none)) {
-    ._ {
-        backdrop-filter: blur(22px);
-        background: rgba(9, 11, 9, 0.6);
+@include breakpoints.max-width-lg {
+    .navigation {
+        display: none;
+    }
+
+    .logo {
+        font-size: 20px;
+
+        &__label {
+            padding-right: 24px;
+
+            &::after {
+                right: 12px;
+            }
+        }
     }
 }

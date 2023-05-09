@@ -1,9 +1,12 @@
 import cn from 'classnames';
 import Image, { StaticImageData } from 'next/image';
-import { CSSProperties, FC, useState } from 'react';
+import Link from 'next/link';
+import { CSSProperties, FC, ReactElement, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
 import { ArrowRightIcon } from '@/shared/ui/icons/ArrowRight';
+import { LongArrowRightIcon } from '@/shared/ui/icons/LongArrowRight';
+import { getTypography } from '@/shared/ui/typography';
 
 import s from './Card.module.scss';
 
@@ -12,22 +15,29 @@ export interface CardProps {
 	description: string;
 	href: string;
 	image: StaticImageData | string;
-	online: number;
 	gradient: { from: string; to: string };
+	children?: ReactElement;
 }
+
 export const Card: FC<CardProps> = props => {
-	const { title, description, href, image, online, gradient } = props;
+	const { title, description, href, image, gradient, children } = props;
 	const [loaded, setLoaded] = useState(false);
+
+	const LinkTag = href ? Link : 'a';
 
 	return (
 		<div className={s._} style={{ '--from': gradient.from, '--to': gradient.to } as CSSProperties}>
 			<div className={s.content}>
 				<div className={s.meta}>
-					<h4 className={s.title}>
-						{title}
-						<ArrowRightIcon />
-					</h4>
-					<p className={s.description}>{description}</p>
+					<LinkTag {...{ href }} className={s.overlaylink}>
+						<h4 className={cn(s.title, getTypography({ variant: 'heading', level: 2 }))}>
+							{title}
+							<LongArrowRightIcon className={s.navigationicon} />
+						</h4>
+					</LinkTag>
+					<p className={cn(s.description, getTypography({ variant: 'text', level: 2, color: 'alto' }))}>
+						{description}
+					</p>
 				</div>
 				<div className={s.extra}></div>
 			</div>
@@ -38,6 +48,7 @@ export const Card: FC<CardProps> = props => {
 				alt={title}
 				onLoadingComplete={() => setTimeout(() => setLoaded(true), 500)}
 			/>
+			{!!children && children}
 		</div>
 	);
 };

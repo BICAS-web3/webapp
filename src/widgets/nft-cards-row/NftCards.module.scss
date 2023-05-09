@@ -1,3 +1,42 @@
+@use '@/shared/styles/mixins/breakpoints.scss';
+
 ._ {
-    --slides-to-show: 5;
+    --gap: 32px;
+    --slides: 5;
+
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+
+    :global(.embla) {
+        overflow: hidden;
+    }
+
+    :global(.embla__container) {
+        display: flex;
+    }
+
+    :global(.embla__slide) {
+        min-width: 0;
+        flex: 0 0 calc((100% - var(--gap) * (var(--slides) - 1)) / var(--slides));
+        margin-right: var(--gap);
+    }
+}
+
+@include breakpoints.max-width-xl {
+    ._ {
+        --gap: 24px;
+        --slides: 4;
+    }
+}
+
+@include breakpoints.max-width-lg {
+    ._ {
+        overflow: visible;
+
+        :global(.embla__slide) {
+            flex: 0 0 190px;
+            margin-right: 16px;
+        }
+    }
 }

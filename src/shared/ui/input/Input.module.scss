@@ -1,0 +1,12 @@
+._ {
+    width: 100%;
+    padding: 12px 16px;
+}
+
+.wrapper {
+    display: flex;
+    overflow: hidden;
+    flex-grow: 1;
+    border: 1px solid var(--color-mine-shaft);
+    border-radius: 6px;
+}

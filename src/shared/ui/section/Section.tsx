@@ -3,31 +3,37 @@ import { FC, ReactElement } from 'react';
 
 import { PropsOf } from '@/shared/types/props';
 
-import { Container } from '../container';
+import { getTypography } from '../typography';
 
 import s from './Section.module.scss';
 
 export interface SectionProps extends PropsOf<'section'> {
 	extra?: ReactElement;
+	slotBefore?: ReactElement;
 	title?: string;
+	bodyProps?: PropsOf<'div'>;
 }
 
 export const Section: FC<SectionProps> = props => {
-	const { title, className, children, extra, ...rest } = props;
+	const { title, slotBefore, className, children, extra, bodyProps, ...rest } = props;
+	const { className: bodyClassName, ...bodyRest } = bodyProps || ({} as PropsOf<'div'>);
 
 	const composedClassName = cn(s._, className);
 
 	return (
 		<section className={composedClassName} {...rest}>
-			<Container>
-				<div className={s.head}>
-					<div className={s.meta}>
-						<h2 className={s.title}>{title}</h2>
+			<div className={s.head}>
+				{!!slotBefore && <div className={s.before}>{slotBefore}</div>}
+				<div className={s.meta}>
+					<div className={s.title}>
+						<h2 className={getTypography({ variant: 'heading', level: 2 })}>{title}</h2>
 					</div>
 					{!!extra && <div className={s.extra}>{extra}</div>}
 				</div>
-				<div className={s.body}>{children}</div>
-			</Container>
+			</div>
+			<div className={cn(s.body, bodyClassName)} {...bodyRest}>
+				{children}
+			</div>
 		</section>
 	);
 };
