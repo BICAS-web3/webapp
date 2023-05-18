@@ -1,35 +1,142 @@
-import cn from 'classnames';
+import {
+	FloatingFocusManager,
+	autoPlacement,
+	autoUpdate,
+	offset,
+	safePolygon,
+	useFloating,
+	useHover,
+	useInteractions,
+	useTransitionStyles,
+} from '@floating-ui/react';
 import { useUnit } from 'effector-react';
 import Link from 'next/link';
-import { FC, useEffect, useState } from 'react';
-
-import { ConnectWalletModal } from '@/features/connect-wallet/ui';
+import { FC, PropsWithChildren, ReactElement, cloneElement, useState } from 'react';
 
 import { sessionModel } from '@/entities/session';
 
 import nft_4 from '@/shared/media/nfts/4.png';
 import { Avatar } from '@/shared/ui/avatar';
 import { Button } from '@/shared/ui/button';
+import { GameIcon } from '@/shared/ui/icons/Game';
 import { LoginIcon } from '@/shared/ui/icons/LogIn';
+import { LogoutIcon } from '@/shared/ui/icons/Logout';
+import { MessageIcon } from '@/shared/ui/icons/Message';
 import { StatusCircle } from '@/shared/ui/status-circle';
 import { getTypography } from '@/shared/ui/typography';
 
-import s from './Header.module.scss';
+import { connectWalletModel } from '../connect-wallet-modal';
+import { gamesListModel } from '../games-list';
+import { invitesListModel } from '../invites-list';
+
+import s from './styles.module.scss';
+
+const OptionsPopover: FC<PropsWithChildren> = ({ children }) => {
+	const [open, setOpen] = useState(false);
+
+	const { openInvitesList, openGamesList } = useUnit({
+		openInvitesList: invitesListModel.openModalEv,
+		openGamesList: gamesListModel.openModalEv,
+	});
+
+	const { x, y, refs, strategy, context } = useFloating({
+		open,
+		onOpenChange: setOpen,
+		strategy: 'fixed',
+		middleware: [
+			offset({
+				mainAxis: 24,
+			}),
+			autoPlacement({ allowedPlacements: ['bottom-end'] }),
+		],
+		whileElementsMounted: autoUpdate,
+	});
+
+	const hover = useHover(context, {
+		handleClose: safePolygon(),
+	});
+
+	const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
+
+	const { isMounted, styles } = useTransitionStyles(context, {
+		duration: 300,
+		initial: {
+			transform: `translateY(20px)`,
+			opacity: 0,
+		},
+		open: {
+			transform: `translateY(0px)`,
+			opacity: 1,
+		},
+		close: {
+			transform: `translateY(20px)`,
+			opacity: 0,
+		},
+	});
+
+	const childClone = cloneElement(children as ReactElement, {
+		ref: refs.setReference,
+		...getReferenceProps(),
+	});
+
+	return (
+		<>
+			{childClone}
+			{isMounted && (
+				<FloatingFocusManager context={context}>
+					<div
+						ref={refs.setFloating}
+						className={s.popup}
+						style={{
+							position: strategy,
+							top: y ?? 0,
+							left: x ?? 0,
+							...styles,
+						}}
+						{...getFloatingProps()}
+					>
+						<div className={s.popup__list}>
+							<Button
+								colorScheme='mine-shaft'
+								variant='ghost'
+								leftIcon={<GameIcon />}
+								onClick={openGamesList}
+							>
+								Active games
+							</Button>
+							<Button
+								colorScheme='mine-shaft'
+								variant='ghost'
+								leftIcon={<MessageIcon />}
+								onClick={openInvitesList}
+							>
+								Invites
+							</Button>
+							<Button
+								colorScheme='stilleto'
+								variant='solid'
+								leftIcon={<LogoutIcon />}
+								onClick={openInvitesList}
+							>
+								Logout
+							</Button>
+						</div>
+					</div>
+				</FloatingFocusManager>
+			)}
+		</>
+	);
+};
 
 export interface HeaderProps {}
 
-export const Header: FC<HeaderProps> = props => {
-	const [open, setOpen] = useState(false);
-
-	const { ready, session, sessionChecked } = useUnit({
-		session: sessionModel.$session,
-		sessionChecked: sessionModel.$sessionChecked,
-		ready: sessionModel.readyToLoadSession,
-	});
-
-	useEffect(() => {
-		ready();
-	}, []);
+export const Header: FC<HeaderProps> = memo => {
+	const [session, pending, checked, openLoginModal] = useUnit([
+		sessionModel.$session,
+		sessionModel.$sessionPending,
+		sessionModel.$sessionChecked,
+		connectWalletModel.openModalEv,
+	]);
 
 	return (
 		<header className={s._}>
@@ -46,7 +153,7 @@ export const Header: FC<HeaderProps> = props => {
 					</svg>
 				</span>
 			</Link>
-			<nav className={s.navigation}>
+			{/* <nav className={s.navigation}>
 				<Link href='/' className={cn(s.link, getTypography({ variant: 'text', level: 1 }))}>
 					Home
 				</Link>
@@ -56,20 +163,35 @@ export const Header: FC<HeaderProps> = props => {
 				<Link href='/' className={cn(s.link, getTypography({ variant: 'text', level: 1 }))}>
 					NFT Market
 				</Link>
-			</nav>
-			{sessionChecked &&
-				(session ? (
-					<div style={{ fontSize: 32 }}>
-						<StatusCircle status='online'>
-							<Avatar name={session} image={nft_4} />
-						</StatusCircle>
+			</nav> */}
+			{!session && !pending && (
+				<Button
+					variant='solid'
+					colorScheme='apple'
+					disabled={pending}
+					onClick={openLoginModal}
+					leftIcon={<LoginIcon />}
+				>
+					Connect Wallet
+				</Button>
+			)}
+			{session && (
+				<OptionsPopover>
+					<div className={s.profile}>
+						<span
+							className={getTypography({ variant: 'text', level: 2, color: 'alto', ellipsis: true })}
+							style={{ maxWidth: '100px' }}
+						>
+							{session?.address}
+						</span>
+						<div style={{ fontSize: 40, position: 'relative' }}>
+							<StatusCircle status='online'>
+								<Avatar name={session?.address} image={nft_4} />
+							</StatusCircle>
+						</div>
 					</div>
-				) : (
-					<Button variant='solid' colorScheme='apple' onClick={() => setOpen(true)} leftIcon={<LoginIcon />}>
-						Connect Wallet
-					</Button>
-				))}
-			<ConnectWalletModal open={open} setOpen={setOpen} />
+				</OptionsPopover>
+			)}
 		</header>
 	);
 };

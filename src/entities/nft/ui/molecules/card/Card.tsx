@@ -1,10 +1,9 @@
 import cn from 'classnames';
 import Image, { StaticImageData } from 'next/image';
-import { title } from 'process';
 import { ReactElement, forwardRef, useState } from 'react';
-import Skeleton from 'react-loading-skeleton';
 
 import { PropsOf } from '@/shared/types/props';
+import { Skeleton } from '@/shared/ui/skeleton';
 import { getTypography } from '@/shared/ui/typography';
 
 import s from './Card.module.scss';

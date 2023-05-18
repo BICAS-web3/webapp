@@ -26,7 +26,7 @@ export const Section: FC<SectionProps> = props => {
 				{!!slotBefore && <div className={s.before}>{slotBefore}</div>}
 				<div className={s.meta}>
 					<div className={s.title}>
-						<h2 className={getTypography({ variant: 'heading', level: 2 })}>{title}</h2>
+						<h2 className={getTypography({ variant: 'heading', level: 2, ellipsis: true })}>{title}</h2>
 					</div>
 					{!!extra && <div className={s.extra}>{extra}</div>}
 				</div>

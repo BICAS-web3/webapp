@@ -1,7 +1,10 @@
 ._ {
+    position: relative;
     overflow: hidden;
     width: 1em;
     height: 1em;
+    align-items: center;
+    justify-content: center;
     border-radius: 50%;
     background: transparent;
 }

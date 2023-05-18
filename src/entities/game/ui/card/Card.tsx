@@ -2,9 +2,7 @@ import cn from 'classnames';
 import Image, { StaticImageData } from 'next/image';
 import Link from 'next/link';
 import { CSSProperties, FC, ReactElement, useState } from 'react';
-import Skeleton from 'react-loading-skeleton';
 
-import { ArrowRightIcon } from '@/shared/ui/icons/ArrowRight';
 import { LongArrowRightIcon } from '@/shared/ui/icons/LongArrowRight';
 import { getTypography } from '@/shared/ui/typography';
 
@@ -41,7 +39,6 @@ export const Card: FC<CardProps> = props => {
 				</div>
 				<div className={s.extra}></div>
 			</div>
-			{!loaded && <Skeleton containerClassName={s.skeleton} borderRadius={0} height='100%' />}
 			<Image
 				src={image}
 				className={cn(s.image, loaded && s.image_loaded)}

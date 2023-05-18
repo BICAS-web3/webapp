@@ -1,0 +1,90 @@
+._ {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    appearance: none;
+    color: var(--color);
+    column-gap: 8px;
+    cursor: pointer;
+    font-family: var(--font-manrope);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 24px;
+    transition: background-color .25s ease;
+    user-select: none;
+    vertical-align: middle;
+    white-space: nowrap;
+
+    &:is(:hover) {
+        border-color: transparent;
+        background-color: var(--background-hover);
+    }
+
+    &:is(:disabled) {
+        // background-color: var(--background-disabled);
+    }
+
+    &_shape {
+        &_rectangle {
+            padding: 8px 16px;
+        }
+
+        &_square {
+            padding: 8px;
+        }
+    }
+
+    &_variant {
+        &_solid {
+            border-color: transparent;
+            background: var(--background);
+        }
+
+        &_outline {
+            border-color: var(--border-color);
+            background: transparent;
+        }
+
+        &_ghost {
+            background: transparent;
+        }
+    }
+
+    &_scheme {
+        &_apple {
+            --color: var(--color-alto);
+            --background: var(--color-apple);
+            --background-hover: var(--color-green);
+            --border-color: transparent;
+            --background-disabled: var(--color-mine-shaft-darken);
+        }
+
+        &_mine-shaft {
+            --color: var(--color-dove-gray);
+            --background: var(--color-mine-shaft-ligther);
+            --background-hover: var(--color-mine-shaft);
+            --border-color: var(--color-mine-shaft);
+            --background-disabled: var(--color-mine-shaft-darken);
+        }
+
+        &_stilleto {
+            --color: var(--color-alto);
+            --background: var(--color-stilleto);
+            --background-hover: var(--color-rof-terracotta);
+            --border-color: transparent;
+            --background-disabled: var(--color-mine-shaft-darken);
+        }
+    }
+}
+
+.content {
+    display: inline-flex;
+    align-items: center;
+}
+
+.icon {
+    display: inline-flex;
+    font-size: 1.2rem;
+}

@@ -1,0 +1,66 @@
+@use '@/shared/styles/mixins/scrollbars.scss';
+@use '@/shared/styles/mixins/breakpoints.scss';
+@use '@/shared/styles/mixins/blur.scss';
+
+._ {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    overflow: hidden;
+    width: min(100%, 420px);
+    height: calc(100% - 40px);
+    flex-direction: column;
+    padding: 24px;
+    border-radius: 12px;
+    background: var(--color-cod-gray);
+    transition: .3s ease;
+}
+
+.overlay {
+    position: relative;
+    z-index: 20;
+    overflow: hidden !important;
+    padding: 20px;
+    transition: opacity .3s ease;
+    @include blur.blur(0.2);
+}
+
+.header {
+    display: flex;
+    flex: none;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    margin-right: 14px;
+}
+
+.body {
+    position: relative;
+    overflow: auto;
+    flex-grow: 1;
+    padding-right: 10px;
+
+    @include scrollbars.brand-scrollbar;
+}
+
+.title {
+    color: var(--color-alto);
+    font-family: var(--font-tt-travels);
+    font-size: 24px;
+    font-weight: 500;
+}
+
+@include breakpoints.max-width-sm {
+    .overlay {
+        padding: 0;
+    }
+
+    ._ {
+        top: 0;
+        right: 0;
+        height: 100%;
+        border-radius: 0;
+    }
+}

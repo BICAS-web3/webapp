@@ -1,4 +1,3 @@
-import cn from 'classnames';
 import { FC, ReactElement } from 'react';
 import Sheet from 'react-modal-sheet';
 
@@ -6,7 +5,7 @@ import { Button } from '../button';
 import { CloseIcon } from '../icons/CloseIcon';
 import { getTypography } from '../typography';
 
-import s from './BottomSheetModal.module.scss';
+import s from './styles.module.scss';
 
 export interface BottomSheetModalProps {
 	isOpen: boolean;
@@ -31,6 +30,7 @@ export const BottomSheetModal: FC<BottomSheetModalProps> = props => {
 								type='button'
 								variant='ghost'
 								colorScheme='mine-shaft'
+								shape='square'
 								style={{ color: 'var(--color-alto)' }}
 								onClick={onClose}
 							>

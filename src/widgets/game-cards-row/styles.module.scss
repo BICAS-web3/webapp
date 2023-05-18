@@ -1,0 +1,14 @@
+@use '@/shared/styles/mixins/breakpoints.scss';
+
+._ {
+    position: relative;
+    display: grid;
+    gap: 36px;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+@include breakpoints.max-width-md {
+    ._ {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,159 @@
+@use '@/shared/styles/mixins/breakpoints.scss';
+
+._ {
+    line-height: 1.4;
+
+    &_heading {
+        color: var(--color-alto);
+        font-family: var(--font-tt-travels);
+        font-weight: 600;
+
+        &_1 {
+            font-size: 40px;
+            font-weight: 500;
+        }
+
+        &_2 {
+            font-size: 36px;
+        }
+
+        &_3 {
+            font-size: 28px;
+        }
+
+        &_4 {
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        &_5 {
+            font-size: 18px;
+        }
+    }
+
+    &_caption {
+        color: var(--color-dusty-gray);
+        font-family: var(--font-tt-travels);
+        font-weight: 500;
+
+        &_1 {
+            font-size: 15px;
+        }
+
+        &_2 {
+            font-size: 13px;
+        }
+    }
+
+    &_text {
+        color: var(--color-dove-gray);
+        font-family: var(--font-manrope);
+        font-weight: 400;
+
+        &_1 {
+            font-size: 20px;
+        }
+
+        &_2 {
+            font-size: 18px;
+        }
+    }
+
+    &_color {
+        &_alto {
+            color: var(--color-alto);
+        }
+
+        &_dusty_gray {
+            color: var(--color-dusty-gray);
+        }
+
+        &_dove_gray {
+            color: var(--color-dove-gray);
+        }
+
+        &_emperor {
+            color: var(--color-emperor);
+        }
+
+        &_inherit {
+            color: inherit;
+        }
+    }
+
+    &_ellipsis {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+@include breakpoints.max-width-2xl {
+    ._ {
+        &_heading {
+            &_1 {
+                font-size: 32px;
+            }
+
+            &_2 {
+                font-size: 26px;
+            }
+
+            &_3 {
+                font-size: 20px;
+            }
+
+            &_4 {
+                font-size: 18px;
+            }
+
+            &_5 {
+                font-size: 16px;
+            }
+        }
+
+        &_caption {
+            &_1 {
+                font-size: 14px;
+            }
+
+            &_2 {
+                font-size: 12px;
+            }
+        }
+    }
+}
+
+@include breakpoints.max-width-lg {
+    ._ {
+        &_heading {
+            &_1 {
+                font-size: 26px;
+            }
+
+            &_2 {
+                font-size: 22px;
+            }
+        }
+
+        &_text {
+            &_1 {
+                font-size: 16px;
+            }
+
+            &_2 {
+                font-size: 14px;
+            }
+        }
+    }
+}
+
+@include breakpoints.max-width-lg {
+    ._ {
+        &_heading {
+            &_1 {
+                font-size: 24px;
+            }
+        }
+    }
+}

@@ -1,0 +1,36 @@
+._ {
+    position: relative;
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-mine-shaft);
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    transition: .3s ease;
+
+    &_checked {
+        background-color: var(--color-apple);
+    }
+}
+
+.input {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+
+.icon {
+    color: var(--color-alto);
+    font-size: 12px;
+    opacity: 0;
+    transition: .3s ease;
+}
+
+.__checked .icon {
+    opacity: 1;
+}

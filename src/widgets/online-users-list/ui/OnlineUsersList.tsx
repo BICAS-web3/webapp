@@ -1,78 +1,70 @@
-import { FloatingFocusManager, FloatingOverlay, useFloating, useTransitionStyles } from '@floating-ui/react';
-import cn from 'classnames';
 import { useUnit } from 'effector-react';
 import { FC } from 'react';
 
 import { UserRow } from '@/entities/user';
 
-import { users } from '@/shared/data/users';
 import { Button } from '@/shared/ui/button';
-import { CloseIcon } from '@/shared/ui/icons/CloseIcon';
+import { CheckIcon } from '@/shared/ui/icons/Check';
+import { FolderIcon } from '@/shared/ui/icons/Folder';
 import { PlusIcon } from '@/shared/ui/icons/PlusIcon';
+import { TailCirlceLoaderIcon } from '@/shared/ui/icons/TailCircleLoader';
+import { SideModal } from '@/shared/ui/side-modal';
 import { getTypography } from '@/shared/ui/typography';
 
 import * as model from '../model';
 
-import s from './OnlineUsersList.module.scss';
+import s from './styles.module.scss';
 
 export interface OnlineUsersListProps {}
 
 export const OnlineUsersList: FC<OnlineUsersListProps> = props => {
-	const { isOpen, close } = useUnit({
-		isOpen: model.$modalOpen,
-		close: model.closeModalEv,
+	const { open, setOpen, users, pending, invite } = useUnit({
+		open: model.$modalOpen,
+		setOpen: model.closeModalEv,
+		users: model.$users,
+		pending: model.$usersPending,
+		invite: model.requestEv,
 	});
 
-	const { refs, context } = useFloating({
-		open: isOpen,
-		onOpenChange: close,
-		strategy: 'fixed',
-	});
-
-	const { isMounted, styles } = useTransitionStyles(context, {
-		initial: {
-			opacity: 0.01,
-			transform: `translateY(200px)`,
-		},
-		open: {
-			opacity: 1,
-			transform: `translateY(0px)`,
-		},
-		close: {
-			opacity: 0.01,
-			transform: `translateY(200px)`,
-		},
-		duration: 300,
-	});
-
-	return isMounted ? (
-		<FloatingOverlay lockScroll className={s.overlay} style={{ opacity: styles.opacity }}>
-			<FloatingFocusManager context={context}>
-				<div ref={refs.setFloating} className={s._} style={{ transform: styles.transform }}>
-					<div className={s.header}>
-						<h4 className={cn(s.title, getTypography({ variant: 'heading', level: 4 }))}>Online users</h4>
-						<Button variant='outline' colorScheme='mine-shaft' onClick={close}>
-							<CloseIcon />
-						</Button>
-					</div>
-					<div className={s.body}>
-						<ul className={s.list}>
-							{users.map(user => (
-								<li key={user.id} className={s.item}>
-									<UserRow
-										{...user}
-										extra={
-											<Button variant='solid' colorScheme='mine-shaft'>
-												<PlusIcon />
-											</Button>
-										}
-									/>
-								</li>
-							))}
-						</ul>
-					</div>
+	return (
+		<SideModal title='Users online' isOpen={open} setOpen={setOpen}>
+			{pending ? (
+				<div className={s.absolute}>
+					<TailCirlceLoaderIcon />
 				</div>
-			</FloatingFocusManager>
-		</FloatingOverlay>
-	) : null;
+			) : (
+				<ul className={s.list}>
+					{users !== null && users.length ? (
+						users.map(user => (
+							<li key={user.id} className={s.item}>
+								<UserRow
+									name={user.address}
+									extra={
+										<Button
+											variant='solid'
+											colorScheme={user.status === 'done' ? 'apple' : 'mine-shaft'}
+											shape='square'
+											onClick={() => user.status !== 'done' && invite({ address: user.address })}
+											disabled={user.status === 'pending' || user.status === 'done'}
+										>
+											{user.status === 'pending' && <TailCirlceLoaderIcon />}
+											{user.status === 'done' && <CheckIcon />}
+											{!user.status && <PlusIcon />}
+										</Button>
+									}
+								/>
+							</li>
+						))
+					) : (
+						<div className={s.absolute}>
+							<FolderIcon />
+							<span className={getTypography({ variant: 'text', level: 2, color: 'dove_gray' })}>
+								{"It's empty"}
+							</span>
+						</div>
+					)}
+				</ul>
+			)}
+		</SideModal>
+	);
 };

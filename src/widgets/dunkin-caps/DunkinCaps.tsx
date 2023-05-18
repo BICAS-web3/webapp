@@ -1,116 +1,246 @@
+import { dunkinCapsModel } from '.';
 import cn from 'classnames';
-import { FC, useState } from 'react';
+import { useUnit } from 'effector-react';
+import { useRouter } from 'next/router';
+import { FC, useEffect } from 'react';
+import ReactConfetti from 'react-confetti';
+import useMeasure from 'react-use/lib/useMeasure';
 
 import { InGameNFTCard, SkeletonInGameNFTCard } from '@/entities/nft/ui/molecules/in-game-card';
 import { UserRow } from '@/entities/user';
 
-import { users } from '@/shared/data/users';
-import useCountdown from '@/shared/lib/use-countdown';
 import { Button } from '@/shared/ui/button';
-import { LongArrowLeftIcon } from '@/shared/ui/icons/LongArrowLeft';
 import { PlusIcon } from '@/shared/ui/icons/PlusIcon';
+import { TailCirlceLoaderIcon } from '@/shared/ui/icons/TailCircleLoader';
 import { Section } from '@/shared/ui/section';
 import { StatusCircle } from '@/shared/ui/status-circle';
-import { Time } from '@/shared/ui/time';
 import { getTypography } from '@/shared/ui/typography';
+import { ViewSpinnerTransition } from '@/shared/ui/view-spinner-transition';
 
-import { SelectNFT } from '../select-nft-for-bid-modal';
+import { selectNftModel } from '../select-nft-modal';
 
-import s from './DunkinCaps.module.scss';
+import { Coinflip } from './Coinflip';
+import s from './styles.module.scss';
 
 export interface DunkinCapsProps {}
 
 export const DunkinCaps: FC<DunkinCapsProps> = props => {
 	const {} = props;
 
-	const [selectNFTModalOpen, setSelectNFTModalOpen] = useState(false);
-	const [countdownValue, countdownApi] = useCountdown({ countStart: 60, countStop: 0, isIncrement: false });
+	const router = useRouter();
+	const [ref, { width, height }] = useMeasure();
+
+	const [
+		approve,
+		transfer,
+		confirm,
+		claim,
+		actionPending,
+		setGameId,
+		game,
+		players,
+		selectedNFT,
+		reset,
+		step,
+		openNftsModal,
+	] = useUnit([
+		dunkinCapsModel.approveEv,
+		dunkinCapsModel.transferEv,
+		dunkinCapsModel.confirmEv,
+		dunkinCapsModel.claimEv,
+		dunkinCapsModel.$actionPending,
+		dunkinCapsModel.setGameId,
+		dunkinCapsModel.$game,
+		dunkinCapsModel.$players,
+		dunkinCapsModel.$selectedNft,
+		dunkinCapsModel.resetEv,
+		dunkinCapsModel.$step,
+		selectNftModel.openModalEv,
+	]);
+
+	useEffect(() => {
+		if (router.query?.lobby) {
+			setGameId(router.query.lobby as string);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [router]);
+
+	useEffect(() => {
+		return reset;
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
-		<Section
-			className={s._}
-			title='Wait for the opponents bid'
-			extra={<Time ms={countdownValue * 1000} />}
-			slotBefore={
-				<Button colorScheme='mine-shaft' variant='ghost' leftIcon={<LongArrowLeftIcon />}>
-					Exit game
-				</Button>
-			}
-			bodyProps={{
-				className: s.body,
-			}}
-		>
-			<div className={s.board}>
-				<div className={s.canvas}>
-					<div className={s.cards}>
-						<div className={s.cardwrapper}>
-							<StatusCircle status='online' loading className={s.circle}>
-								<SkeletonInGameNFTCard />
-							</StatusCircle>
-						</div>
-						<div className={s.cardwrapper}>
-							<button
+		<>
+			<Section
+				className={s._}
+				bodyProps={{
+					className: s.body,
+				}}
+			>
+				{/* @ts-ignore */}
+				<div ref={ref} className={s.board}>
+					<div className={s.canvas}>
+						<div className={s.cards}>
+							<div
 								className={cn(
-									s.sheettriger,
-									getTypography({ variant: 'text', level: 2, color: 'dusty_gray' })
+									s.cardwrapper,
+									game?.winner_addr
+										? game.winner_addr === players?.current.address
+											? s.cardwrapper_win
+											: s.cardwrapper_fail
+										: null
 								)}
-								onClick={() => setSelectNFTModalOpen(true)}
 							>
-								<PlusIcon className={s.sheettriger__icon} />
-								<span>Select NFT</span>
-							</button>
-							<SkeletonInGameNFTCard />
+								{players?.opponent.nft ? (
+									<InGameNFTCard
+										hash={players.opponent.nft.contract}
+										price={players.opponent.nft?.price}
+										name={''}
+										// @ts-ignore
+										image={players.opponent.nft.image_url}
+										// @ts-ignore
+										selected={players.opponent.ready && game?.status > 1}
+									/>
+								) : (
+									<StatusCircle status='online' loading className={s.circle}>
+										<SkeletonInGameNFTCard />
+									</StatusCircle>
+								)}
+							</div>
+							<div
+								className={cn(
+									s.cardwrapper,
+									game?.winner_addr
+										? game.winner_addr === players?.current.address
+											? s.cardwrapper_win
+											: s.cardwrapper_fail
+										: null
+								)}
+							>
+								{players?.current?.nft && (
+									<InGameNFTCard
+										hash={players.current.nft.contract}
+										price={players.current.nft?.price}
+										name={''}
+										// @ts-ignore
+										image={players.current.nft.image_url}
+										// @ts-ignore
+										selected={players.current.ready && game?.status > 1}
+									/>
+								)}
+								{selectedNFT && !players?.current?.nft && (
+									<InGameNFTCard
+										key={selectedNFT.tokenId}
+										hash={selectedNFT.contract}
+										image={selectedNFT.img_url}
+										name={''}
+										price={players?.current.nft?.price}
+									/>
+								)}
+								{!selectedNFT && !players?.current.nft && (
+									<>
+										<button
+											className={cn(
+												s.sheettriger,
+												getTypography({ variant: 'text', level: 2, color: 'dusty_gray' })
+											)}
+											onClick={openNftsModal}
+										>
+											<PlusIcon className={s.sheettriger__icon} />
+											<span>Select NFT</span>
+										</button>
+										<SkeletonInGameNFTCard />
+									</>
+								)}
+							</div>
 						</div>
+						{step !== 'select' && (
+							<div className={s.controls}>
+								{step === 'approve' && (
+									<Button
+										colorScheme='apple'
+										variant='solid'
+										leftIcon={actionPending ? <TailCirlceLoaderIcon /> : undefined}
+										disabled={actionPending}
+										onClick={approve}
+									>
+										Approve
+									</Button>
+								)}
+								{step === 'transfer' && (
+									<Button
+										colorScheme='apple'
+										variant='solid'
+										leftIcon={actionPending ? <TailCirlceLoaderIcon /> : undefined}
+										disabled={actionPending}
+										onClick={transfer}
+									>
+										Place a bet
+									</Button>
+								)}
+								{step === 'wait' && (
+									<Button
+										colorScheme='mine-shaft'
+										variant='outline'
+										leftIcon={<TailCirlceLoaderIcon />}
+										disabled
+									>
+										Waiting for opponent
+									</Button>
+								)}
+								{step === 'confirm' && (
+									<Button
+										colorScheme='apple'
+										variant='solid'
+										leftIcon={actionPending ? <TailCirlceLoaderIcon /> : undefined}
+										disabled={actionPending}
+										onClick={confirm}
+									>
+										Confirm bid
+									</Button>
+								)}
+								{step === 'claim' && (
+									<Button
+										colorScheme='apple'
+										variant='solid'
+										leftIcon={actionPending ? <TailCirlceLoaderIcon /> : undefined}
+										disabled={actionPending}
+										onClick={claim}
+									>
+										Claim reward
+									</Button>
+								)}
+							</div>
+						)}
+						{(step === 'claim' || step === 'done') && <Coinflip />}
 					</div>
-					<div className={s.controls}>
-						<Button variant='solid' colorScheme='apple' className={s.button}>
-							Accept
-						</Button>
-						<Button variant='solid' colorScheme='stilleto' className={s.button}>
-							Deny
-						</Button>
+					<div className={s.stats}>
+						<div className={s.players}>
+							{[game?.applicant_addr, game?.receiver_addr]
+								.filter(v => !!v)
+								.map(user => (
+									<div key={user} className={s.player}>
+										<UserRow name={user as string} status='playing' />
+									</div>
+								))}
+						</div>
 					</div>
 				</div>
-				<div className={s.stats}>
-					<div className={s.players}>
-						<div className={s.player}>
-							<UserRow {...users[0]} />
-							<span className={s.player__chance}>
-								<span className={getTypography({ variant: 'heading', level: 5, color: 'dusty_gray' })}>
-									3.13 ETH
-								</span>
-								<span className={getTypography({ variant: 'heading', level: 4 })}>15.2%</span>
-							</span>
-						</div>
-						<div className={s.player}>
-							<UserRow {...users[1]} />
-							<span className={s.player__chance}>
-								<span className={getTypography({ variant: 'heading', level: 5, color: 'dusty_gray' })}>
-									3.13 ETH
-								</span>
-								<span className={getTypography({ variant: 'heading', level: 4 })}>15.2%</span>
-							</span>
-						</div>
-					</div>
-					<div className={s.bank}>
-						<div className={s.bank__topline}>
-							<span className={getTypography({ variant: 'heading', level: 3, color: 'emperor' })}>
-								Total bank:
-							</span>
-							<span className={getTypography({ variant: 'heading', level: 3 })}>6.23 ETH</span>
-						</div>
-						<div className={s.bank__bottomline}>
-							<span className={getTypography({ variant: 'text', level: 1, color: 'emperor' })}>
-								Commission:{' '}
-							</span>
-							<span className={getTypography({ variant: 'text', level: 1, color: 'dusty_gray' })}>
-								~0.13 ETH
-							</span>
-						</div>
-					</div>
-				</div>
-			</div>
-			<SelectNFT isOpen={selectNFTModalOpen} close={() => setSelectNFTModalOpen(false)} />
-		</Section>
+				{game?.winner_addr && game?.winner_addr === players?.current.address && (
+					<ReactConfetti
+						style={{ pointerEvents: 'none', width, height }}
+						numberOfPieces={50}
+						confettiSource={{
+							w: 10,
+							h: 10,
+							x: width / 2,
+							y: height / 2,
+						}}
+					/>
+				)}
+			</Section>
+			<ViewSpinnerTransition animate={!game} />
+		</>
 	);
 };
