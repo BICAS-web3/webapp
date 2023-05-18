@@ -20,7 +20,10 @@ export const $invitesPending = getInvitesFx.pending;
 
 export const $createdGame = createStore<T_Game['id'] | null>(null);
 
-$modalOpen.on(openModalEv, () => true).on(closeModalEv, () => false);
+$modalOpen
+	.on(openModalEv, () => true)
+	.on(closeModalEv, () => false)
+	.reset(resetEv);
 
 $invites
 	.on(getInvitesFx.doneData, (_, payload) => payload.requests)
@@ -38,9 +41,10 @@ $invites
 	)
 	.on([acceptInviteFx.done, declineInviteFx.done], (invites, payload) =>
 		invites.filter(invite => invite.id !== payload.params.id)
-	);
+	)
+	.reset(resetEv);
 
-$createdGame.on(createGameFx.doneData, (_, payload) => payload.id);
+$createdGame.on(createGameFx.doneData, (_, payload) => payload.id).reset(resetEv);
 
 sample({
 	clock: openModalEv,
@@ -61,9 +65,4 @@ sample({
 	clock: acceptInviteFx.doneData,
 	fn: ({ applicant_addr, receiver_addr }) => ({ applicant_addr, receiver_addr }),
 	target: createGameFx,
-});
-
-reset({
-	clock: resetEv,
-	target: [$modalOpen, $invites, $createdGame],
 });

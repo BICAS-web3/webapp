@@ -1,5 +1,5 @@
 import { createEvent, createStore, sample } from 'effector';
-import { interval, reset } from 'patronum';
+import { interval } from 'patronum';
 
 import { sessionModel } from '@/entities/session';
 
@@ -22,11 +22,12 @@ const { tick } = interval({
 export const $searching = createStore<boolean>(false);
 export const $createdGame = createStore<number | null>(null);
 
-$searching.on(startIntervalEv, () => true);
-$searching.on(stopIntervalEv, () => false);
-$searching.on(createRandomGameFx.doneData, () => false);
-
-$createdGame.on(createRandomGameFx.doneData, (_, payload) => payload.id);
+$searching
+	.on(startIntervalEv, () => true)
+	.on(stopIntervalEv, () => false)
+	.on(createRandomGameFx.doneData, () => false)
+	.reset(resetEv);
+$createdGame.on(createRandomGameFx.doneData, (_, payload) => payload.id).reset(resetEv);
 
 sample({
 	clock: startGameSearchEv,
@@ -52,9 +53,4 @@ sample({
 sample({
 	clock: createRandomGameFx.finally,
 	target: stopIntervalEv,
-});
-
-reset({
-	clock: resetEv,
-	target: [$searching, $createdGame],
 });

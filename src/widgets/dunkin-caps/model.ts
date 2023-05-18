@@ -1,6 +1,6 @@
 import { createEffect, createEvent, createStore, sample } from 'effector';
 import { ethers } from 'ethers';
-import { and, interval, not, or, reset } from 'patronum';
+import { and, interval, not, or } from 'patronum';
 
 import { sessionModel } from '@/entities/session';
 
@@ -125,10 +125,14 @@ export const $actionPending = or(
 	doneGameFx.pending
 );
 
-$gameId.on(setGameId, (_, payload) => payload);
-$game.on(getGameFx.doneData, (_, payload) => payload).on(runGameFx.doneData, (_, payload) => payload);
-$selectedNft.on(selectNftEv, (_, payload) => payload);
-$notFound.on(getGameFx.fail, () => true);
+$gameId.on(setGameId, (_, payload) => payload).reset(resetEv);
+$game
+	.on(getGameFx.doneData, (_, payload) => payload)
+	.on(runGameFx.doneData, (_, payload) => payload)
+	.reset(resetEv);
+$players.reset(resetEv);
+$selectedNft.on(selectNftEv, (_, payload) => payload).reset(resetEv);
+$notFound.on(getGameFx.fail, () => true).reset(resetEv);
 
 $step
 	.on($selectedNft, (_, payload) => (payload ? 'approve' : 'select'))
@@ -136,7 +140,8 @@ $step
 	.on(setBetFx.done, () => 'wait')
 	.on(confirmBetFx.done, () => 'wait')
 	.on(doneGameFx.done, () => 'done')
-	.on(claimFx.done, () => 'done');
+	.on(claimFx.done, () => 'done')
+	.reset(resetEv);
 
 const { tick } = interval({
 	timeout: 15000,
@@ -296,9 +301,4 @@ sample({
 		id: source as string,
 	}),
 	target: getGameFx,
-});
-
-reset({
-	clock: resetEv,
-	target: [$gameId, $game, $selectedNft, $step, $actionPending, $notFound],
 });
