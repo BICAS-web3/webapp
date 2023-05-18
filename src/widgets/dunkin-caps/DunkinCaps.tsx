@@ -94,13 +94,13 @@ export const DunkinCaps: FC<DunkinCapsProps> = props => {
 							>
 								{players?.opponent.nft ? (
 									<InGameNFTCard
-										hash={players.opponent.nft.contract}
-										price={players.opponent.nft?.price}
+										hash={players?.opponent?.nft?.contract}
+										price={players?.opponent?.nft?.price}
 										name={''}
 										// @ts-ignore
-										image={players.opponent.nft.image_url}
+										image={players?.opponent?.nft?.image_url}
 										// @ts-ignore
-										selected={players.opponent.ready && game?.status > 1}
+										selected={players?.opponent.ready && game?.status > 1}
 									/>
 								) : (
 									<StatusCircle status='online' loading className={s.circle}>
@@ -120,13 +120,13 @@ export const DunkinCaps: FC<DunkinCapsProps> = props => {
 							>
 								{players?.current?.nft && (
 									<InGameNFTCard
-										hash={players.current.nft.contract}
-										price={players.current.nft?.price}
+										hash={players?.current?.nft?.contract}
+										price={players?.current?.nft?.price}
 										name={''}
 										// @ts-ignore
-										image={players.current.nft.image_url}
+										image={players?.current?.nft?.image_url}
 										// @ts-ignore
-										selected={players.current.ready && game?.status > 1}
+										selected={players?.current.ready && game?.status > 1}
 									/>
 								)}
 								{selectedNFT && !players?.current?.nft && (
@@ -135,10 +135,10 @@ export const DunkinCaps: FC<DunkinCapsProps> = props => {
 										hash={selectedNFT.contract}
 										image={selectedNFT.img_url}
 										name={''}
-										price={players?.current.nft?.price}
+										price={players?.current?.nft?.price}
 									/>
 								)}
-								{!selectedNFT && !players?.current.nft && (
+								{!selectedNFT && !players?.current?.nft && (
 									<>
 										<button
 											className={cn(
@@ -227,7 +227,7 @@ export const DunkinCaps: FC<DunkinCapsProps> = props => {
 						</div>
 					</div>
 				</div>
-				{game?.winner_addr && game?.winner_addr === players?.current.address && (
+				{game?.winner_addr && game?.winner_addr === players?.current?.address && (
 					<ReactConfetti
 						style={{ pointerEvents: 'none', width, height }}
 						numberOfPieces={50}
