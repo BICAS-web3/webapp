@@ -198,7 +198,7 @@ sample({
 	source: [$game, $step],
 	filter: (source, clock) => !!source[0] && !!source[1] && !!clock,
 	fn: ([game, step], players): T_Step => {
-		if (!players?.current.nft) {
+		if (!players?.current?.nft) {
 			return step as T_Step;
 		}
 
@@ -212,11 +212,11 @@ sample({
 			return 'run';
 		}
 
-		if (!players?.current.ready && !players?.opponent.nft) {
+		if (!players?.current.ready && !players?.opponent?.nft) {
 			return 'wait';
 		}
 
-		if (!players?.current.ready && players?.opponent.nft) {
+		if (!players?.current.ready && players?.opponent?.nft) {
 			return 'confirm';
 		}
 

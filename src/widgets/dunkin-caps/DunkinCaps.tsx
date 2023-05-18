@@ -86,7 +86,7 @@ export const DunkinCaps: FC<DunkinCapsProps> = props => {
 								className={cn(
 									s.cardwrapper,
 									game?.winner_addr
-										? game.winner_addr === players?.current.address
+										? game.winner_addr === players?.current?.address
 											? s.cardwrapper_win
 											: s.cardwrapper_fail
 										: null
@@ -112,7 +112,7 @@ export const DunkinCaps: FC<DunkinCapsProps> = props => {
 								className={cn(
 									s.cardwrapper,
 									game?.winner_addr
-										? game.winner_addr === players?.current.address
+										? game.winner_addr === players?.current?.address
 											? s.cardwrapper_win
 											: s.cardwrapper_fail
 										: null
