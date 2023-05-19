@@ -2,6 +2,7 @@ import { oneVsOneModel } from '.';
 import { animated, easings, useTransition } from '@react-spring/web';
 import cn from 'classnames';
 import { useUnit } from 'effector-react';
+import { useRouter } from 'next/router';
 import { FC, useEffect, useState } from 'react';
 
 import { connectWalletModel } from '@/widgets/connect-wallet-modal';
@@ -64,6 +65,7 @@ export const OneVsOne: FC<OneVsOneProps> = props => {
 		},
 		delay: 0,
 	});
+	const router = useRouter();
 
 	const handleSearchClick = () => {
 		if (isAuthenticated) {
@@ -85,6 +87,12 @@ export const OneVsOne: FC<OneVsOneProps> = props => {
 		return reset;
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	useEffect(() => {
+		if (game !== null) {
+			router.push(`/games/dunkin-caps/${game}`);
+		}
+	}, [game, router]);
 
 	useEffect(() => {
 		countdownApi[!!searching ? 'start' : 'reset']();
