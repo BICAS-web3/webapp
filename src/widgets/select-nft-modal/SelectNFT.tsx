@@ -58,6 +58,7 @@ export const SelectNFT: FC<SelectNFTProps> = props => {
 										nfts.map((nft, i) => (
 											<InGameNFTCard
 												key={nft.tokenId}
+												token={nft.tokenId}
 												image={nft.img_url}
 												price={0}
 												name=''

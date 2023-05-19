@@ -94,6 +94,7 @@ export const DunkinCaps: FC<DunkinCapsProps> = props => {
 							>
 								{players?.opponent.nft ? (
 									<InGameNFTCard
+										token={players?.opponent?.nft?.token_id}
 										hash={players?.opponent?.nft?.contract}
 										price={players?.opponent?.nft?.price}
 										name={''}
@@ -120,6 +121,7 @@ export const DunkinCaps: FC<DunkinCapsProps> = props => {
 							>
 								{players?.current?.nft && (
 									<InGameNFTCard
+										token={players?.opponent?.nft?.token_id}
 										hash={players?.current?.nft?.contract}
 										price={players?.current?.nft?.price}
 										name={''}
@@ -131,6 +133,7 @@ export const DunkinCaps: FC<DunkinCapsProps> = props => {
 								)}
 								{selectedNFT && !players?.current?.nft && (
 									<InGameNFTCard
+										token={selectedNFT.tokenId}
 										key={selectedNFT.tokenId}
 										hash={selectedNFT.contract}
 										image={selectedNFT.img_url}
