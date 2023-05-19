@@ -9,12 +9,14 @@ export const SessionProvider: FC = () => {
 	const [ready] = useUnit([readyEv]);
 
 	useEffect(() => {
-		// @ts-ignore
-		const provider = new ethers.providers.Web3Provider(window.ethereum as any);
-		const signer = provider.getSigner();
+		try {
+			// @ts-ignore
+			const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+			const signer = provider.getSigner();
 
-		web3ProviderInitEv({ provider, signer });
-		ready();
+			web3ProviderInitEv({ provider, signer });
+			ready();
+		} catch (e) {}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 

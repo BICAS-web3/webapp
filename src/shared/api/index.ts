@@ -21,12 +21,17 @@ export type T_Account = {
 export type T_SignInSuccess = T_Session;
 
 export const signInFx = createEffect<T_SignIn, T_SignInSuccess, unknown>(async form => {
-	await new Promise(resolve => setTimeout(resolve, 600));
-
 	return fetch(`${BaseApiUrl}/auth/auth`, {
 		method: 'POST',
 		credentials: 'include',
 		body: JSON.stringify(form),
+	}).then(async res => await res.json());
+});
+
+export const logoutFx = createEffect<void, undefined, undefined>(async () => {
+	return fetch(`${BaseApiUrl}/logout`, {
+		method: 'POST',
+		credentials: 'include',
 	}).then(async res => await res.json());
 });
 

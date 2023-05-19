@@ -22,6 +22,7 @@ import { GameIcon } from '@/shared/ui/icons/Game';
 import { LoginIcon } from '@/shared/ui/icons/LogIn';
 import { LogoutIcon } from '@/shared/ui/icons/Logout';
 import { MessageIcon } from '@/shared/ui/icons/Message';
+import { TailCirlceLoaderIcon } from '@/shared/ui/icons/TailCircleLoader';
 import { StatusCircle } from '@/shared/ui/status-circle';
 import { getTypography } from '@/shared/ui/typography';
 
@@ -34,10 +35,12 @@ import s from './styles.module.scss';
 const OptionsPopover: FC<PropsWithChildren> = ({ children }) => {
 	const [open, setOpen] = useState(false);
 
-	const { openInvitesList, openGamesList } = useUnit({
-		openInvitesList: invitesListModel.openModalEv,
-		openGamesList: gamesListModel.openModalEv,
-	});
+	const [openInvitesList, openGamesList, logout, pending] = useUnit([
+		invitesListModel.openModalEv,
+		gamesListModel.openModalEv,
+		sessionModel.logoutEv,
+		sessionModel.$sessionPending,
+	]);
 
 	const { x, y, refs, strategy, context } = useFloating({
 		open,
@@ -115,8 +118,8 @@ const OptionsPopover: FC<PropsWithChildren> = ({ children }) => {
 							<Button
 								colorScheme='stilleto'
 								variant='solid'
-								leftIcon={<LogoutIcon />}
-								onClick={openInvitesList}
+								leftIcon={pending ? <TailCirlceLoaderIcon /> : <LogoutIcon />}
+								onClick={logout}
 							>
 								Logout
 							</Button>
