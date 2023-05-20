@@ -68,9 +68,13 @@ export const Card: FC<CardProps> = props => {
 				) : (
 					<>
 						{extra}
-						<span className={cn(s.price, getTypography({ variant: 'caption', level: 1, color: 'alto' }))}>
-							{price} ETH
-						</span>
+						{!!price && (
+							<span
+								className={cn(s.price, getTypography({ variant: 'caption', level: 1, color: 'alto' }))}
+							>
+								{price} MATIC
+							</span>
+						)}
 					</>
 				)}
 			</div>

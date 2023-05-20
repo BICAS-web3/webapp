@@ -216,7 +216,10 @@ export const DunkinCaps: FC<DunkinCapsProps> = props => {
 								)}
 							</div>
 						)}
-						{(step === 'claim' || step === 'done') && <Coinflip />}
+						<Coinflip
+							play={step === 'claim' || step === 'done'}
+							animationVariant={game?.winner_addr === players?.current?.address ? 'winner' : 'loser'}
+						/>
 					</div>
 					<div className={s.stats}>
 						<div className={s.players}>
