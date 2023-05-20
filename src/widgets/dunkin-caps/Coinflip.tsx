@@ -1,6 +1,7 @@
 import { useAnimations, useGLTF } from '@react-three/drei';
-import { Canvas } from '@react-three/fiber';
+import { Canvas, act } from '@react-three/fiber';
 import { FC, Suspense, useEffect } from 'react';
+import { AnimationAction } from 'three';
 
 interface ModelProps {
 	action: 'winner' | 'loser';
@@ -9,25 +10,16 @@ interface ModelProps {
 
 const Model: FC<ModelProps> = ({ action, play = false }) => {
 	const { scene, animations } = useGLTF('/coinflip/3dcoinOrigin.gltf');
-	const { actions } = useAnimations(animations, scene);
-
-	useEffect(() => {
-		if (actions.topface && actions.bottomface) {
-			// @ts-ignore
-			const current = actions[action === 'loser' ? 'topface' : 'bottomface'];
-			// @ts-ignore
-			current.setLoop(2200, 1);
-		}
-	}, []);
+	const { actions, mixer } = useAnimations(animations, scene);
 
 	useEffect(() => {
 		if (play && actions.topface && actions.bottomface) {
-			// @ts-ignore
-			const current = actions[action === 'loser' ? 'topface' : 'bottomface'];
-			// @ts-ignore
+			const current = actions[action === 'loser' ? 'bottomface' : 'topface'] as AnimationAction;
 			current.play();
+			current.clampWhenFinished = true;
+			current.setLoop(2200, 1);
 		}
-	}, [play]);
+	}, [play, action]);
 
 	// @ts-ignore
 	return play ? <primitive object={scene} /> : null;
