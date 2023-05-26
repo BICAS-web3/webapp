@@ -17,6 +17,7 @@ import { StatusCircle } from '@/shared/ui/status-circle';
 import { getTypography } from '@/shared/ui/typography';
 import { ViewSpinnerTransition } from '@/shared/ui/view-spinner-transition';
 
+import { HowToPopup } from '../how-to-popup';
 import { selectNftModel } from '../select-nft-modal';
 
 import { Coinflip } from './Coinflip';
@@ -80,6 +81,11 @@ export const DunkinCaps: FC<DunkinCapsProps> = props => {
 			>
 				{/* @ts-ignore */}
 				<div ref={ref} className={s.board}>
+					<HowToPopup style={{ position: 'absolute', top: 0, right: 0, zIndex: 2 }}>
+						Dunkin&apos; caps is a 2-player cooperative game. Each player puts their NFT to the brink. The
+						probability of winning depends on the NFT value of each player. Just find an opponent and
+						confirm the game to jointly toss a chip.
+					</HowToPopup>
 					<div className={s.canvas}>
 						<div className={s.cards}>
 							<div

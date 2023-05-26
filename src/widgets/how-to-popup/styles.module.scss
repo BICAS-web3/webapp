@@ -1,0 +1,16 @@
+@use '@/shared/styles/mixins/blur.scss';
+
+._ {
+    position: relative;
+}
+
+.popup {
+    position: absolute;
+    width: min(360px, calc(100vw - 40px));
+    padding: 2em 1em;
+    border-radius: 4px;
+    color: var(--color-alto);
+    transition: .3s ease;
+
+    @include blur.blur;
+}
