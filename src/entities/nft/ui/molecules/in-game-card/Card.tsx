@@ -27,31 +27,55 @@ export interface CardProps extends PropsOf<'div'> {
 	onCardClick?: () => void;
 }
 
+const tokenURIABI = [
+	{
+		inputs: [
+			{
+				internalType: 'uint256',
+				name: 'tokenId',
+				type: 'uint256',
+			},
+		],
+		name: 'tokenURI',
+		outputs: [
+			{
+				internalType: 'string',
+				name: '',
+				type: 'string',
+			},
+		],
+		stateMutability: 'view',
+		type: 'function',
+	},
+];
+
 const getNFTMetadata = async (contractAddress: string, tokenId: string) => {
 	try {
 		// @ts-ignore
-		const provider = new ethers.providers.Web3Provider(window.ethereum);
-		const contract = new ethers.Contract(
-			contractAddress,
-			['function tokenURI(uint256 tokenId) view returns (string)'],
-			provider
-		);
+		const providerUrl = 'https://polygon-rpc.com';
+		const provider = new ethers.providers.JsonRpcProvider(providerUrl);
+		// const provider = new ethers.providers.Web3Provider(window.ethereum);
+		const contract = new ethers.Contract(contractAddress, tokenURIABI, provider);
 
 		const tokenURI = await contract.tokenURI(tokenId);
 		const ipfsGatewayUrl = `https://ipfs.io/ipfs/${tokenURI.replace('ipfs://', '')}`;
+
+		if (!tokenURI?.length) {
+			throw new Error();
+		}
 
 		const response = await fetch(ipfsGatewayUrl);
 		const metadata = await response.json();
 
 		return metadata;
 	} catch (e) {
+		console.log(e);
 		return null;
 	}
 };
 
 export const Card: FC<CardProps> = props => {
 	const { name, hash, price, image, extra, onCardClick, selected, token } = props;
-
 	const [metadata, setMetadata] = useState<T_NFTMetadata | null>(null);
 
 	useEffect(() => {
