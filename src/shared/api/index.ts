@@ -24,7 +24,7 @@ export const signInFx = createEffect<T_SignIn, T_SignInSuccess, unknown>(async f
 	return fetch(`${BaseApiUrl}/auth/auth`, {
 		method: 'POST',
 		credentials: 'include',
-		body: JSON.stringify({ address: '0x782b26d6f3C4EfaD291728440BD909F6a37D3a1D' }),
+		body: JSON.stringify({ address: '0x3039CFeCc86252408098b696dDa98D7389983886' }),
 	}).then(async res => await res.json());
 });
 
