@@ -1,8 +1,8 @@
 import cn from 'classnames';
-import { ethers } from 'ethers';
 import type { StaticImageData } from 'next/image';
-import { FC, ReactElement, useEffect, useState } from 'react';
-import { IpfsMedia } from 'react-ipfs-image';
+import Image from 'next/image';
+import { FC, ReactElement } from 'react';
+import { useNft } from 'use-nft';
 
 import type { PropsOf } from '@/shared/types/props';
 import { Skeleton } from '@/shared/ui/skeleton';
@@ -27,62 +27,10 @@ export interface CardProps extends PropsOf<'div'> {
 	onCardClick?: () => void;
 }
 
-const tokenURIABI = [
-	{
-		inputs: [
-			{
-				internalType: 'uint256',
-				name: 'tokenId',
-				type: 'uint256',
-			},
-		],
-		name: 'tokenURI',
-		outputs: [
-			{
-				internalType: 'string',
-				name: '',
-				type: 'string',
-			},
-		],
-		stateMutability: 'view',
-		type: 'function',
-	},
-];
-
-const getNFTMetadata = async (contractAddress: string, tokenId: string) => {
-	try {
-		// @ts-ignore
-		const providerUrl = 'https://polygon-rpc.com';
-		const provider = new ethers.providers.JsonRpcProvider(providerUrl);
-		// const provider = new ethers.providers.Web3Provider(window.ethereum);
-		const contract = new ethers.Contract(contractAddress, tokenURIABI, provider);
-
-		const tokenURI = await contract.tokenURI(tokenId);
-		const ipfsGatewayUrl = `https://ipfs.io/ipfs/${tokenURI.replace('ipfs://', '')}`;
-
-		if (!tokenURI?.length) {
-			throw new Error();
-		}
-
-		const response = await fetch(ipfsGatewayUrl);
-		const metadata = await response.json();
-
-		return metadata;
-	} catch (e) {
-		console.log(e);
-		return null;
-	}
-};
-
 export const Card: FC<CardProps> = props => {
 	const { name, hash, price, image, extra, onCardClick, selected, token } = props;
-	const [metadata, setMetadata] = useState<T_NFTMetadata | null>(null);
 
-	useEffect(() => {
-		if (hash && token) {
-			getNFTMetadata(hash, `${token}`).then(setMetadata);
-		}
-	}, []);
+	const { nft, loading } = useNft(hash, `${token}`);
 
 	return (
 		<div className={cn(s._, selected && s.__selected)} onClick={onCardClick}>
@@ -103,17 +51,19 @@ export const Card: FC<CardProps> = props => {
 				)}
 			</div>
 			<div className={s.assets}>
-				{metadata ? (
-					<IpfsMedia hash={metadata.image} className={s.image} controls={false} muted />
-				) : (
-					<Skeleton />
+				{nft?.image && nft?.imageType === 'image' && (
+					<Image src={nft.image} alt={nft.description} className={s.image} />
 				)}
+				{nft?.image && nft.imageType === 'video' && (
+					<video src={nft.image} className={s.image} controls={false} muted={true} />
+				)}
+				{!nft?.image || (nft.imageType === 'unknown' && <Skeleton />)}
 			</div>
 			<div className={s.details}>
-				{metadata ? (
+				{nft ? (
 					<>
 						<span className={cn(s.name, getTypography({ variant: 'caption', level: 2, ellipsis: true }))}>
-							{metadata.name}
+							{nft.name}
 						</span>
 						<span
 							className={cn(s.name, getTypography({ variant: 'caption', level: 2, ellipsis: true }))}
