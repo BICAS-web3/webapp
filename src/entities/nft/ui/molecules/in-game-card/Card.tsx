@@ -59,7 +59,7 @@ export const Card: FC<CardProps> = props => {
 				{nft?.image && nft.imageType === 'video' && (
 					<video src={nft.image} className={s.image} controls={false} muted={true} />
 				)}
-				{(!nft || !imgLoaded) && <Skeleton />}
+				{(!nft || !imgLoaded) && <Skeleton style={{ position: 'absolute' }} />}
 			</div>
 			<div className={s.details}>
 				{nft ? (
