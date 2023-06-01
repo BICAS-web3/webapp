@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import type { StaticImageData } from 'next/image';
 import Image from 'next/image';
-import { FC, ReactElement } from 'react';
+import { FC, ReactElement, useState } from 'react';
 import { useNft } from 'use-nft';
 
 import type { PropsOf } from '@/shared/types/props';
@@ -29,8 +29,9 @@ export interface CardProps extends PropsOf<'div'> {
 
 export const Card: FC<CardProps> = props => {
 	const { name, hash, price, image, extra, onCardClick, selected, token } = props;
-
 	const { nft, loading } = useNft(hash, `${token}`);
+
+	const [imgLoaded, setImgLoaded] = useState(false);
 
 	return (
 		<div className={cn(s._, selected && s.__selected)} onClick={onCardClick}>
@@ -51,13 +52,14 @@ export const Card: FC<CardProps> = props => {
 				)}
 			</div>
 			<div className={s.assets}>
-				{nft?.image && nft?.imageType === 'image' && (
-					<img src={nft.image} alt={nft.description} className={s.image} />
+				{nft?.image && nft?.imageType !== 'video' && (
+					// eslint-disable-next-line @next/next/no-img-element
+					<img src={nft.image} alt={nft.description} className={s.image} onLoad={() => setImgLoaded(true)} />
 				)}
 				{nft?.image && nft.imageType === 'video' && (
 					<video src={nft.image} className={s.image} controls={false} muted={true} />
 				)}
-				{(!nft || nft.imageType === 'unknown') && <Skeleton />}
+				{(!nft || !imgLoaded) && <Skeleton />}
 			</div>
 			<div className={s.details}>
 				{nft ? (
