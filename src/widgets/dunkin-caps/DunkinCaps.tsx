@@ -82,6 +82,7 @@ export const DunkinCaps: FC<DunkinCapsProps> = props => {
 				{/* @ts-ignore */}
 				<div ref={ref} className={s.board}>
 					<HowToPopup style={{ position: 'absolute', top: 0, right: 0, zIndex: 2 }}>
+						NOTE: Please note that your NFT is ERC 721. <br />
 						Dunkin&apos; caps is a 2-player cooperative game. Each player puts their NFT to the brink. The
 						probability of winning depends on the NFT value of each player. Just find an opponent and
 						confirm the game to jointly toss a chip.
