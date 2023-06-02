@@ -16,7 +16,7 @@ export const ComingSoon: FC<ComingSoonProps> = props => {
 	return (
 		<div className={cn(s._, className)} {...rest}>
 			<ClockIcon />
-			<span className={getTypography({ variant: 'text', level: 2, color: 'alto' })}>Processing...</span>
+			<span className={getTypography({ variant: 'text', level: 2, color: 'alto' })}>Soon...</span>
 		</div>
 	);
 };
