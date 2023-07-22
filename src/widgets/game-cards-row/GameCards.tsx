@@ -4,6 +4,7 @@ import { GameCard } from '@/entities/game/ui/card';
 
 import CrushImage from '@/shared/media/games/crush.png';
 import DunkinCapsImage from '@/shared/media/games/dunkin_caps.png';
+import CoinFlipImage from '@/shared/media/games/coinflip.png';
 import { Button } from '@/shared/ui/button';
 import { ComingSoonPlaceholder } from '@/shared/ui/coming-soon-placeholder';
 import { Container } from '@/shared/ui/container';
@@ -36,7 +37,27 @@ export const GameCards: FC<GameCardsProps> = props => {
 							to: 'rgba(36, 69, 9, 0.33)',
 						}}
 					/>
+					{/* <GameCard
+						href='/games/rock-paper-scissors'
+						title='Rock-Paper-Scissors'
+						description='A game where you can test your luck and flip a coin'
+						image={RockPaperScissorsImage}
+						gradient={{
+							from: '#CD7F32',
+							to: 'rgba(128, 74, 0, 0.33)',
+						}}
+					/> */}
 					<GameCard
+						href='/games/coin-flip'
+						title='Coin Flip'
+						description='A game where you can test your luck and flip a coin'
+						image={CoinFlipImage}
+						gradient={{
+							from: '#CD7F32',
+							to: 'rgba(128, 74, 0, 0.33)',
+						}}
+					/>
+					{/* <GameCard
 						href='/games/crush'
 						title='Crush'
 						description='A game where you have to pick up your bet at the right moment'
@@ -47,7 +68,7 @@ export const GameCards: FC<GameCardsProps> = props => {
 						}}
 					>
 						<ComingSoonPlaceholder />
-					</GameCard>
+					</GameCard> */}
 				</div>
 			</Section>
 		</Container>

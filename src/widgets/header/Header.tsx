@@ -11,7 +11,7 @@ import {
 } from '@floating-ui/react';
 import { useUnit } from 'effector-react';
 import Link from 'next/link';
-import { FC, PropsWithChildren, ReactElement, cloneElement, useState } from 'react';
+import { FC, PropsWithChildren, ReactElement, cloneElement, useEffect, useState } from 'react';
 
 import { sessionModel } from '@/entities/session';
 
@@ -26,20 +26,26 @@ import { TailCirlceLoaderIcon } from '@/shared/ui/icons/TailCircleLoader';
 import { StatusCircle } from '@/shared/ui/status-circle';
 import { getTypography } from '@/shared/ui/typography';
 
+import { BSCLogo } from '@/shared/media/networks/BSCLogo';
+import { AvailableNetworks } from '@/shared/data/networks';
+
 import { connectWalletModel } from '../connect-wallet-modal';
 import { gamesListModel } from '../games-list';
 import { invitesListModel } from '../invites-list';
 
 import s from './styles.module.scss';
+import { MMSDK } from '@/entities/session/model';
 
 const OptionsPopover: FC<PropsWithChildren> = ({ children }) => {
 	const [open, setOpen] = useState(false);
 
-	const [openInvitesList, openGamesList, logout, pending] = useUnit([
+	const [openInvitesList, openGamesList, logout, pending, sessionAddress, setSessionAddress] = useUnit([
 		invitesListModel.openModalEv,
 		gamesListModel.openModalEv,
 		sessionModel.logoutEv,
 		sessionModel.$sessionPending,
+		sessionModel.$sessionAddress,
+		sessionModel.setSessionAddress
 	]);
 
 	const { x, y, refs, strategy, context } = useFloating({
@@ -119,7 +125,7 @@ const OptionsPopover: FC<PropsWithChildren> = ({ children }) => {
 								colorScheme='stilleto'
 								variant='solid'
 								leftIcon={pending ? <TailCirlceLoaderIcon /> : <LogoutIcon />}
-								onClick={logout}
+								onClick={() => { setSessionAddress(null) }}
 							>
 								Logout
 							</Button>
@@ -131,15 +137,205 @@ const OptionsPopover: FC<PropsWithChildren> = ({ children }) => {
 	);
 };
 
-export interface HeaderProps {}
+interface AvailableNetworksListProps { activeId: number };
 
-export const Header: FC<HeaderProps> = memo => {
-	const [session, pending, checked, openLoginModal] = useUnit([
-		sessionModel.$session,
+const AvailableNetworksList: FC<AvailableNetworksListProps> = props => {
+
+	const [sessionAddress, pending, checked, openLoginModal, setSessionAddress, chosenNetwork, setChosenNetwork] = useUnit([
+		sessionModel.$sessionAddress,
 		sessionModel.$sessionPending,
 		sessionModel.$sessionChecked,
 		connectWalletModel.openModalEv,
+		sessionModel.setSessionAddress,
+		sessionModel.$chosenNetwork,
+		sessionModel.setChosenNetwork
 	]);
+
+	const ethereum = MMSDK.getProvider();
+
+	let chains: ReactElement[] = []
+
+	for (let availableNetwork of Array.from(AvailableNetworks)) {
+		if (availableNetwork[0] === props.activeId) {
+			continue;
+		}
+		let data = availableNetwork[1];
+		chains.push(<><button className={s.popup_network_list_element} onClick={async () => {
+			await ethereum.request({
+				method: 'wallet_addEthereumChain',
+				params: [data.networkParams]
+			}).then(() => {
+				setChosenNetwork(availableNetwork[0])
+			});
+		}}>
+			<data.icon />
+
+		</button></>);
+	}
+
+	if (chains.length) {
+		return (<>
+			<div style={{ paddingTop: '13px' }}>
+				<div className={s.networks_popup}>{chains}</div>
+			</div>
+		</>)
+	}
+
+	return (<></>)
+}
+
+interface ChainIconProps { id: number };
+
+const ChainInfo: FC<ChainIconProps> = props => {
+	let networkData = AvailableNetworks.get(props.id);
+	if (!networkData) {
+		return (<div className={s.bad_network_info}>UNKNOWN CHAIN</div>);
+	}
+	return (<>
+		<div className={s.picked_network_info}>
+			<div style={{ width: '100%' }}>
+				{networkData.name}
+			</div>
+
+			<div style={{
+				height: '37.5px',
+				width: '50px',
+				display: 'float'
+			}}>
+				<networkData.icon />
+			</div>
+
+		</div>
+	</>)
+}
+
+interface AvailableTokensListProps { networkId: number, activeId: number };
+
+const AvailableTokensList: FC<AvailableTokensListProps> = props => {
+
+	const [setChosenNetwork, chosenToken, setChosenToken] = useUnit([
+		// sessionModel.$sessionAddress,
+		// sessionModel.$sessionPending,
+		// sessionModel.$sessionChecked,
+		// connectWalletModel.openModalEv,
+		// sessionModel.setSessionAddress,
+		// sessionModel.$chosenNetwork,
+		sessionModel.setChosenNetwork,
+		sessionModel.$chosenToken,
+		sessionModel.setChosenToken,
+	]);
+
+	const ethereum = MMSDK.getProvider();
+
+	let tokensList: ReactElement[] = []
+
+	const networkData = AvailableNetworks.get(props.networkId);
+
+	if (networkData) {
+		const tokens = networkData?.tokens;
+		for (let index = 0; index < tokens.length; index++) {
+			if (index == props.activeId) {
+				continue;
+			}
+			const token = tokens[index];
+
+			tokensList.push(<><button className={s.popup_network_list_element} onClick={() => {
+				setChosenToken(index);
+			}}>
+				<token.icon />
+
+			</button></>);
+
+		}
+	}
+
+	if (tokensList.length) {
+		return (<>
+			<div style={{ paddingTop: '13px' }}>
+				<div className={s.tokens_popup}>{tokensList}</div>
+			</div>
+		</>)
+	}
+
+	return (<></>)
+}
+
+interface TokenProps { networkId: number, id: number };
+
+const TokenInfo: FC<TokenProps> = props => {
+	let networkData = AvailableNetworks.get(props.networkId);
+	if (!networkData) {
+		return (<></>);
+	}
+	let tokenData = networkData.tokens[props.id];
+	return (<>
+		<div className={s.picked_token_info}>
+			{/* <div style={{ width: '100%' }}>
+				{networkData.name}
+			</div> */}
+
+			<div style={{
+				height: '37.5px',
+				width: '50px',
+				display: 'float'
+			}}>
+				<tokenData.icon />
+			</div>
+
+		</div>
+	</>)
+}
+
+export interface HeaderProps { }
+
+export const Header: FC<HeaderProps> = memo => {
+	const [sessionAddress, pending, checked, openLoginModal, setSessionAddress, chosenNetwork, setChosenNetwork, chosenToken, setChosenToken] = useUnit([
+		sessionModel.$sessionAddress,
+		sessionModel.$sessionPending,
+		sessionModel.$sessionChecked,
+		connectWalletModel.openModalEv,
+		sessionModel.setSessionAddress,
+		sessionModel.$chosenNetwork,
+		sessionModel.setChosenNetwork,
+		sessionModel.$chosenToken,
+		sessionModel.setChosenToken,
+	]);
+
+	const ethereum = MMSDK.getProvider();
+
+	useEffect(() => {
+		checkMetamaskConnection();
+		checkCurrentNetwork();
+	}, [])
+
+	const accountChangeHandler = (accounts: any) => {
+		if (accounts.length) {
+			setSessionAddress(accounts[0]);
+		} else {
+			setSessionAddress(null);
+		}
+	}
+
+
+	const networkChangeHandler = (network: any) => {
+		console.log('Chain ID: ' + network);
+		setChosenNetwork(parseInt(network, 16));
+	}
+
+	ethereum.on('accountsChanged', accountChangeHandler);
+	ethereum.on('chainChanged', networkChangeHandler);
+
+	const checkMetamaskConnection = async () => {
+		await ethereum.request({ method: 'eth_accounts' }).then(accountChangeHandler).catch((err) => {
+			console.error(err);
+		});
+	}
+
+	const checkCurrentNetwork = async () => {
+		await ethereum.request({ method: 'eth_chainId' }).then(networkChangeHandler).catch((err) => {
+			console.error(err);
+		});
+	}
 
 	return (
 		<header className={s._}>
@@ -156,6 +352,23 @@ export const Header: FC<HeaderProps> = memo => {
 					</svg>
 				</span>
 			</Link>
+
+			{sessionAddress &&
+				<div style={{
+					display: 'flex',
+					flexDirection: 'row',
+				}}>
+					<div className={s.chain_info_box}>
+						<ChainInfo id={chosenNetwork} />
+						<AvailableNetworksList activeId={chosenNetwork} />
+					</div>
+
+					<div className={s.token_info_box}>
+						<TokenInfo networkId={chosenNetwork} id={chosenToken} />
+						<AvailableTokensList networkId={chosenNetwork} activeId={chosenToken} />
+					</div>
+				</div>
+			}
 			{/* <nav className={s.navigation}>
 				<Link href='/' className={cn(s.link, getTypography({ variant: 'text', level: 1 }))}>
 					Home
@@ -167,7 +380,18 @@ export const Header: FC<HeaderProps> = memo => {
 					NFT Market
 				</Link>
 			</nav> */}
-			{!session && !pending && (
+			{/* {!session && !pending && (
+				<Button
+					variant='solid'
+					colorScheme='apple'
+					disabled={pending}
+					onClick={openLoginModal}
+					leftIcon={<LoginIcon />}
+				>
+					Connect Wallet
+				</Button>
+			)} */}
+			{!sessionAddress && (
 				<Button
 					variant='solid'
 					colorScheme='apple'
@@ -178,18 +402,18 @@ export const Header: FC<HeaderProps> = memo => {
 					Connect Wallet
 				</Button>
 			)}
-			{session && (
+			{sessionAddress && (
 				<OptionsPopover>
 					<div className={s.profile}>
 						<span
 							className={getTypography({ variant: 'text', level: 2, color: 'alto', ellipsis: true })}
 							style={{ maxWidth: '100px' }}
 						>
-							{session?.address}
+							{sessionAddress?.toString()}
 						</span>
 						<div style={{ fontSize: 40, position: 'relative' }}>
 							<StatusCircle status='online'>
-								<Avatar name={session?.address} image={nft_4} />
+								<Avatar name={sessionAddress?.toString()} image={nft_4} />
 							</StatusCircle>
 						</div>
 					</div>

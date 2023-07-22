@@ -2,6 +2,7 @@ import { connectWalletModel } from '.';
 import { useUnit } from 'effector-react';
 import { FC, useState } from 'react';
 
+import { sessionModel } from '@/entities/session';
 import { signInFx } from '@/shared/api';
 import { Button } from '@/shared/ui/button';
 import { MetamaskIcon } from '@/shared/ui/icons/Metamask';
@@ -10,7 +11,7 @@ import { Modal } from '@/shared/ui/modal';
 
 import s from './styles.module.scss';
 
-export interface ConnectWalletModalProps {}
+export interface ConnectWalletModalProps { }
 
 export const ConnectWalletModal: FC<ConnectWalletModalProps> = props => {
 	const [loading, setLoading] = useState(false);
@@ -19,14 +20,22 @@ export const ConnectWalletModal: FC<ConnectWalletModalProps> = props => {
 		close: connectWalletModel.closeModalEv,
 		signIn: signInFx,
 	});
+	const [sessionAddress, setSessionAddress] = useUnit(
+		[
+			sessionModel.$sessionAddress,
+			sessionModel.setSessionAddress
+		]
+	)
 
 	const handleConnectClick = async () => {
 		setLoading(true);
 		try {
 			// @ts-ignore
-			const accounts = await (window.ethereum as any).request({ method: 'eth_requestAccounts' });
+			await (window.ethereum as any).request({ method: 'wallet_requestPermissions', params: [{ eth_accounts: {} }] });
+			const accounts = await (window.ethereum as any).request({ method: 'eth_accounts' });
 
 			if (accounts.length) {
+				setSessionAddress(accounts[0]);
 				signIn({ address: accounts[0] });
 				close();
 			}

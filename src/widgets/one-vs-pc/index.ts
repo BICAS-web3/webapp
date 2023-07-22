@@ -1,0 +1,1 @@
+export { OneVsPc } from './OneVsPc';

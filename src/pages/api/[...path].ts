@@ -14,7 +14,7 @@ export const config = {
 };
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-	return new Promise((resolve, reject) => {
+	return new Promise<void>((resolve, reject) => {
 		const pathname = url.parse(req.url as string).pathname;
 		const cookies = new Cookies(req, res);
 		const authToken = cookies.get('token');
@@ -30,7 +30,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 			cookies.set('token', null);
 
 			res.status(200).json({ loggedIn: false });
-			resolve(true);
+			resolve();
 		}
 
 		if (!isLogin && authToken) {
@@ -78,7 +78,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
 					// @ts-ignore
 					res.status(200).json({ loggedIn: true });
-					resolve({ loggedIn: true });
+					res.end();
+					resolve();
 				} catch (err) {
 					// @ts-ignore
 					res.status(403).end();

@@ -11,5 +11,13 @@
 	"scss.validate": false,
 	"css.validate": false,
 	"less.validate": false,
-	"stylelint.validate": ["css", "less", "postcss", "scss"]
+	"stylelint.validate": [
+		"css",
+		"less",
+		"postcss",
+		"scss"
+	],
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "vscode.typescript-language-features"
+	}
 }

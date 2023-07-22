@@ -116,3 +116,154 @@
         }
     }
 }
+
+.chain_info_box {
+    position: relative;
+    width: 100px;
+    height: 62px;
+    display: inline-block;
+}
+
+.chain_info_box:hover .networks_popup{
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.bad_network_info {
+    color: red;
+    font-weight: 900;
+	text-align: center;
+	vertical-align: center;
+	padding: 7px;
+	align-items: center;
+	align-content: center;
+	background-color: #383737;
+	border-radius: 5px;
+}
+
+.bad_network_info:hover{
+    
+    background-color: #090B09;
+    cursor: pointer;
+}
+
+.picked_network_info {
+    color: white;
+    font-weight: 900;
+    width: 100%;
+	align-items: center;
+	align-content: center;
+    justify-content: center;
+	background-color: #383737;
+	border-radius: 5px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.picked_network_info:hover{
+    
+    background-color: #090B09;
+    cursor: pointer;
+}
+
+.networks_popup {
+    width: 100%;
+    z-index: 1;
+    position:absolute;
+    //margin-top: 13px;
+    display: none;
+    //display: flex;
+    padding: 16px;
+
+    border-radius: 6px;
+    background: var(--color-cod-gray);
+    row-gap: 4px;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.45);
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.45);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.45);
+}
+
+.popup_network_list_element {
+    height: 37.5px;
+	width: 50px;
+	margin: auto;
+    border-radius: 6px;
+}
+
+.popup_network_list_element:hover {
+    background-color: #383737;
+    box-shadow: 0px 0px 5px 0px #383737;
+    -webkit-box-shadow: 0px 0px 5px 0px #383737;
+    -moz-box-shadow: 0px 0px 5px 0px #383737;
+    cursor: pointer;
+}
+
+
+.token_info_box {
+    margin-left: 10px;
+    position: relative;
+    width: 70px;
+    height: 30px;
+    display: inline-block;
+}
+
+.token_info_box:hover .tokens_popup{
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.picked_token_info {
+    padding:12px;
+    color: white;
+    font-weight: 900;
+    width: 100%;
+	align-items: center;
+	align-content: center;
+    justify-content: center;
+	//background-color: #383737;
+	border-radius: 5px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.picked_token_info:hover{
+    
+    background-color: #090B09;
+    cursor: pointer;
+}
+
+.tokens_popup {
+    width: 100%;
+    z-index: 1;
+    position:absolute;
+    //margin-top: 13px;
+    display: none;
+    //display: flex;
+    padding: 10px;
+
+    border-radius: 6px;
+    background: var(--color-cod-gray);
+    row-gap: 4px;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.45);
+    -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.45);
+    -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.45);
+}
+
+.tokens_popup_list_element {
+    height: 37.5px;
+	width: 50px;
+	margin: auto;
+    border-radius: 6px;
+}
+
+.tokens_popup_list_element:hover {
+    background-color: #383737;
+    box-shadow: 0px 0px 5px 0px #383737;
+    -webkit-box-shadow: 0px 0px 5px 0px #383737;
+    -moz-box-shadow: 0px 0px 5px 0px #383737;
+    cursor: pointer;
+}
