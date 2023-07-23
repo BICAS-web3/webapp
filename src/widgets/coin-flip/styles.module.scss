@@ -275,3 +275,101 @@
     text-shadow:0px 0px 1px black;
     opacity: 0.7;
 }
+
+.winner_looser_msg {
+    color: white;
+    font-weight: 900;
+    width: 100%;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.side_picker {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    column-gap: 15px;
+    align-items: center;
+    justify-content: center;
+}
+
+.coin_pick_side {
+    background-color: #383737;
+    width: 100px;
+    height: 100px;
+}
+
+//
+/// COIN FLIP ANIMATION
+//
+
+
+// body {
+//     -webkit-perspective: 800px;
+//   }
+
+  #coin_container {
+    position: relative;
+    margin: 0 auto;
+    width: 100px;
+    height: 100px;
+    -webkit-perspective: 800px;
+  }
+  .coin_side {
+    width: 100%;
+    height: 100%;
+    -webkit-border-radius: 50%;
+       -moz-border-radius: 50%;
+            border-radius: 50%;
+    -webkit-box-shadow: inset 0 0 45px rgba(255,255,255,.3), 0 12px 20px -10px rgba(0,0,0,.4);
+       -moz-box-shadow: inset 0 0 45px rgba(255,255,255,.3), 0 12px 20px -10px rgba(0,0,0,.4);
+            box-shadow: inset 0 0 45px rgba(255,255,255,.3), 0 12px 20px -10px rgba(0,0,0,.4);
+  }
+  .heads_image {
+    background-color: #bb0000;
+    height: 100%;
+  }
+  .tails_image {
+    background-color: #3e3e3e;
+    height: 100%;
+  }
+  
+  #coin_container {
+    transition: -webkit-transform 1s ease-in;
+    -webkit-transform-style: preserve-3d;
+  }
+  .coin_side {
+    position: absolute;
+    -webkit-backface-visibility: hidden;
+  }
+  .heads_image {
+    z-index: 100;
+  }
+  .tails_image {
+    -webkit-transform: rotateY(-180deg);
+  
+  }
+  
+  #coin_container.heads {
+    -webkit-animation: flipHeads 3s ease-out forwards;
+    -moz-animation: flipHeads 3s ease-out forwards;
+      -o-animation: flipHeads 3s ease-out forwards;
+         animation: flipHeads 3s ease-out forwards;
+  }
+  #coin_container.tails {
+    -webkit-animation: flipTails 3s ease-out forwards;
+    -moz-animation: flipTails 3s ease-out forwards;
+      -o-animation: flipTails 3s ease-out forwards;
+         animation: flipTails 3s ease-out forwards;
+  }
+  
+  @-webkit-keyframes flipHeads {
+    from { -webkit-transform: rotateY(0); -moz-transform: rotateY(0); transform: rotateY(0); }
+    to { -webkit-transform: rotateY(1800deg); -moz-transform: rotateY(1800deg); transform: rotateY(1800deg); }
+  }
+  @-webkit-keyframes flipTails {
+    from { -webkit-transform: rotateY(0); -moz-transform: rotateY(0); transform: rotateY(0); }
+    to { -webkit-transform: rotateY(1980deg); -moz-transform: rotateY(1980deg); transform: rotateY(1980deg); }
+  }
+  
+  

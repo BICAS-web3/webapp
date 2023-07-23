@@ -60,7 +60,8 @@
 		"sass": "^1.62.0",
 		"three": "^0.152.2",
 		"typescript": "5.0.4",
-		"use-nft": "^0.12.0"
+		"use-nft": "^0.12.0",
+		"web3": "^4.0.3"
 	},
 	"devDependencies": {
 		"@effector/swc-plugin": "^0.0.9",

@@ -11,12 +11,17 @@ import { useUnit } from 'effector-react';
 import { CoinFlipModel } from './index';
 import { MMSDK } from '@/entities/session/model';
 import { ethers } from 'ethers';
-import { ADDRESS, ABI } from '@/shared/data/contracts/CoinFlip';
+import { ADDRESS as CoinFlipAddress, ABI as CoinFlipAbi } from '@/shared/data/contracts/CoinFlip';
+import { ADDRESS as VRFCoordinatorAddress, ABI as VRFCoordinatorAbi } from '@/shared/data/contracts/VRFCoordinatorV2Mock';
 import { AvailableNetworks } from '@/shared/data/networks';
 import { CoinSide } from './model';
+import Web3 from 'web3';
+import { hexZeroPad } from 'ethers/lib/utils';
+import ReactDOM from 'react-dom';
+import { ABI as IERC20 } from '@/shared/data/contracts/ERC20'
 
 interface CoinModelProps {
-    action: 'winner' | 'loser';
+    action: CoinSide;
     play?: boolean;
 }
 
@@ -26,7 +31,7 @@ const CoinModel: FC<CoinModelProps> = ({ action, play = false }) => {
 
     useEffect(() => {
         if (play && actions.topface && actions.bottomface) {
-            const current = actions[action === 'loser' ? 'bottomface' : 'topface'] as AnimationAction;
+            const current = actions[action == CoinSide.Tails ? 'bottomface' : 'topface'] as AnimationAction;
             current.play();
             current.clampWhenFinished = true;
             current.setLoop(2200, 1);
@@ -42,10 +47,11 @@ export const CoinFlipAnimation: FC<CoinModelProps> = ({ action, play = false }) 
         <div
             style={{
                 //position: 'absolute',
-                width: '50%',
+                width: '500px',
                 height: '100%',
                 zIndex: 10,
                 pointerEvents: 'none',
+
             }}
         >
             <Canvas camera={{ position: [1, 6, 1] }} style={{ pointerEvents: 'none' }}>
@@ -60,6 +66,53 @@ export const CoinFlipAnimation: FC<CoinModelProps> = ({ action, play = false }) 
     );
 };
 
+export const Heads: FC<{}> = () => {
+    //return (<><div className={[s.heads_image, s.coin_side].join(' ')}></div></>)
+    return (<div style={{ backgroundColor: 'green', height: '100%' }}></div>)
+}
+
+export const Tails: FC<{}> = () => {
+    //return (<><div className={[s.tails_image, s.coin_side].join(' ')}></div></>)
+    return (<div style={{ backgroundColor: 'red', height: '100%' }}></div>)
+}
+
+export interface CoinProps {
+    action: CoinSide,
+    play: boolean
+}
+
+export const Coin: FC<CoinProps> = props => {
+    // return (<>
+    //     {
+    //         !props.play ? <div id={s.coin_container}>
+    //             <Heads />
+    //             <Tails />
+    //         </div> : <>
+    //             {
+    //                 props.action == CoinSide.Head ? <div id={s.coin_container} className={s.heads}>
+    //                     <Heads />
+    //                     <Tails />
+    //                 </div> : <div id={s.coin_container} className={s.tails}>
+    //                     <Heads />
+    //                     <Tails />
+    //                 </div>
+    //             }
+    //         </>
+    //     }
+    // </>)
+
+    return (<>
+        <div id={s.coin_container}>{
+            props.action == CoinSide.Head ?
+                <Heads />
+
+                :
+
+                <Tails />
+
+        }</div></>)
+}
+
 export interface CoinFlipSettingsProps { }
 
 export const CoinFlipSettings: FC<CoinFlipSettingsProps> = props => {
@@ -72,7 +125,21 @@ export const CoinFlipSettings: FC<CoinFlipSettingsProps> = props => {
         sessionModel.$chosenToken
     ]);
 
-    const [BetsAmount, BetsAmountInt, setBetsAmount, Wager, WagerNum, setWager, pickedSide, setPickedSide] = useUnit([
+    const [BetsAmount,
+        BetsAmountInt,
+        setBetsAmount,
+        Wager,
+        WagerNum,
+        setWager,
+        pickedSide,
+        setPickedSide,
+        resultsPending,
+        setResultsPending,
+        playAnimation,
+        setPlayAnimation,
+        Won,
+        setWon
+    ] = useUnit([
         CoinFlipModel.$BetsAmount,
         CoinFlipModel.$BetsAmountInt,
         CoinFlipModel.setBetsAmount,
@@ -80,9 +147,14 @@ export const CoinFlipSettings: FC<CoinFlipSettingsProps> = props => {
         CoinFlipModel.$WagerNum,
         CoinFlipModel.setWager,
         CoinFlipModel.$PickedSide,
-        CoinFlipModel.setPickedSide
-    ])
-
+        CoinFlipModel.setPickedSide,
+        CoinFlipModel.$ResultsPending,
+        CoinFlipModel.setResultsPending,
+        CoinFlipModel.$PlayAnimation,
+        CoinFlipModel.setPlayAnimation,
+        CoinFlipModel.$Won,
+        CoinFlipModel.setWon
+    ]);
 
 
     const changeBets = (event: { target: { value: SetStateAction<string>; }; }) => {
@@ -104,16 +176,57 @@ export const CoinFlipSettings: FC<CoinFlipSettingsProps> = props => {
         }
     }
 
-    //const ethereum = MMSDK.getProvider();
-
-    const makeBet = async () => {
+    const makeBet = async (pickedSide: CoinSide) => {
         const ethereum = new ethers.providers.Web3Provider((window.ethereum as any));
+        const web3Utils = new Web3();
+
         const signer = await ethereum.getSigner();
-        const contract = new ethers.Contract(ADDRESS, ABI, signer);
+        const coinflip_contract = new ethers.Contract(CoinFlipAddress, CoinFlipAbi, signer);
+        const vrfcoordinator_contract = new ethers.Contract(VRFCoordinatorAddress, VRFCoordinatorAbi, ethereum);
 
-        const tokenAddress = AvailableNetworks.get(chosenNetwork)?.tokens[chosenToken].contractAddress
+        const tokenAddress = AvailableNetworks.get(chosenNetwork)?.tokens[chosenToken].contractAddress;
+        const tokenContract = new ethers.Contract(tokenAddress as string, IERC20, signer);
 
-        await contract.CoinFlip_Play(WagerNum, tokenAddress, pickedSide == CoinSide.Head, BetsAmountInt, 1000000, 1000000, { value: 3000000000000000, gasLimit: 400000, gasPrice: 2500000256 });
+        let fees = await coinflip_contract.getVRFFee(1000000);
+
+        let resultsPending = false;
+
+        const filter = coinflip_contract.filters.CoinFlip_Outcome_Event(await signer.getAddress());
+        ethereum.on(filter, (event) => {
+            if (!resultsPending) {
+                return;
+            }
+
+            const types = CoinFlipAbi[13].inputs;
+            const decodedParameters: any = web3Utils.eth.abi.decodeLog(types, event.data, event.topics);
+            if (pickedSide.valueOf() == decodedParameters.coinOutcomes[0] as number) {
+                console.log("You won!");
+            } else {
+                console.log("You lost!");
+            }
+            setWon(pickedSide.valueOf() == decodedParameters.coinOutcomes[0] as number);
+            console.log(decodedParameters);
+            resultsPending = false;
+
+            console.log(decodedParameters.coinOutcomes[0] as CoinSide);
+
+            // let coinWrapper: HTMLElement = (document.getElementById('coin') as HTMLElement);
+            // ReactDOM.unmountComponentAtNode(coinWrapper);
+            // ReactDOM.render(<CoinFlipAnimation action={decodedParameters.coinOutcomes[0] as CoinSide} play={true} />, coinWrapper)
+
+            //setPickedSide(decodedParameters.coinOutcomes[0] as CoinSide);
+            //setPlayAnimation(true);
+        })
+
+        let allowance = await tokenContract.allowance(sessionAddress, CoinFlipAddress);
+
+        if (allowance < (WagerNum * BetsAmountInt)) {
+            await tokenContract.approve(CoinFlipAddress, WagerNum * BetsAmountInt * 10);
+        }
+
+        await coinflip_contract.CoinFlip_Play(WagerNum, tokenAddress, pickedSide, BetsAmountInt, 1000000, 1000000, { value: 3000000000000000, gasLimit: 400000, gasPrice: 2500000256 });
+
+        resultsPending = true;
     }
 
     return (<>
@@ -155,6 +268,14 @@ export const CoinFlipSettings: FC<CoinFlipSettingsProps> = props => {
                     </div>
                 </div>
 
+                {
+                    Won === null ? <></> : <>
+                        {
+                            Won ? <div className={s.winner_looser_msg}>You won!</div> : <div className={s.winner_looser_msg}>You lost!</div>
+                        }
+                    </>
+                }
+
                 <div className={s.stop_gain}></div>
                 <div className={s.stop_loss}></div>
 
@@ -164,7 +285,7 @@ export const CoinFlipSettings: FC<CoinFlipSettingsProps> = props => {
 
             {
                 sessionAddress ?
-                    < button className={s.place_bet_button} onClick={async () => { await makeBet(); }}>Place bet</button>
+                    < button className={s.place_bet_button} onClick={async () => { await makeBet(pickedSide); }}>Place bet</button>
                     : < button className={s.place_bet_button_disabled} disabled>Not connected</button>
             }
         </div >
@@ -174,6 +295,33 @@ export const CoinFlipSettings: FC<CoinFlipSettingsProps> = props => {
 export interface CoinFlipProps { }
 
 export const CoinFlip: FC<CoinFlipProps> = props => {
+
+    const [BetsAmount,
+        BetsAmountInt,
+        setBetsAmount,
+        Wager,
+        WagerNum,
+        setWager,
+        pickedSide,
+        setPickedSide,
+        resultsPending,
+        setResultsPending,
+        playAnimation,
+        setPlayAnimation
+    ] = useUnit([
+        CoinFlipModel.$BetsAmount,
+        CoinFlipModel.$BetsAmountInt,
+        CoinFlipModel.setBetsAmount,
+        CoinFlipModel.$Wager,
+        CoinFlipModel.$WagerNum,
+        CoinFlipModel.setWager,
+        CoinFlipModel.$PickedSide,
+        CoinFlipModel.setPickedSide,
+        CoinFlipModel.$ResultsPending,
+        CoinFlipModel.setResultsPending,
+        CoinFlipModel.$PlayAnimation,
+        CoinFlipModel.setPlayAnimation
+    ]);
 
     return (<>
         <Section
@@ -192,7 +340,29 @@ export const CoinFlip: FC<CoinFlipProps> = props => {
                     height: '100%',
                 }}
             >
-                <CoinFlipAnimation action={'winner'} play={true} />
+                <div style={{
+                    width: "60%",
+                    height: "100%",
+                    display: 'flex',
+                    flexDirection: 'column',
+                    columnGap: '40px'
+                }}>
+                    <div id='coin_box' style={{
+                        width: "100%",
+                        height: "70%"
+                    }}>
+                        <Coin action={pickedSide} play={true} />
+                    </div>
+
+                    <div className={s.side_picker}>
+                        <div className={s.coin_pick_side} style={{
+                            backgroundColor: 'green'
+                        }} onClick={() => { setPickedSide(CoinSide.Head); console.log('head') }}></div>
+                        <div className={s.coin_pick_side} style={{
+                            backgroundColor: 'red'
+                        }} onClick={() => { setPickedSide(CoinSide.Tails); console.log('tail') }}></div>
+                    </div>
+                </div>
                 <CoinFlipSettings />
 
 
