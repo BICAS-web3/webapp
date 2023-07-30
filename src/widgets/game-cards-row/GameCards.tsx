@@ -13,7 +13,7 @@ import { Section } from '@/shared/ui/section';
 
 import s from './styles.module.scss';
 
-export interface GameCardsProps {}
+export interface GameCardsProps { }
 
 export const GameCards: FC<GameCardsProps> = props => {
 	return (
@@ -27,7 +27,7 @@ export const GameCards: FC<GameCardsProps> = props => {
 				}
 			>
 				<div className={s._}>
-					<GameCard
+					{/* <GameCard
 						href='/games/dunkin-caps'
 						title='Dunkin Caps'
 						description='A game where you have to beat your opponent with a chip'
@@ -36,7 +36,7 @@ export const GameCards: FC<GameCardsProps> = props => {
 							from: '#A0FF55',
 							to: 'rgba(36, 69, 9, 0.33)',
 						}}
-					/>
+					/> */}
 					{/* <GameCard
 						href='/games/rock-paper-scissors'
 						title='Rock-Paper-Scissors'

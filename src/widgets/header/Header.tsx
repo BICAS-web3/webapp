@@ -326,6 +326,10 @@ export const Header: FC<HeaderProps> = memo => {
 	ethereum.on('chainChanged', networkChangeHandler);
 
 	const checkMetamaskConnection = async () => {
+		await ethereum
+			.request({ method: 'eth_requestAccounts' }).catch((err) => {
+				console.error(err);
+			});
 		await ethereum.request({ method: 'eth_accounts' }).then(accountChangeHandler).catch((err) => {
 			console.error(err);
 		});

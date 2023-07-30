@@ -19,6 +19,7 @@ import Web3 from 'web3';
 import { hexZeroPad } from 'ethers/lib/utils';
 import ReactDOM from 'react-dom';
 import { ABI as IERC20 } from '@/shared/data/contracts/ERC20'
+var bigDecimal = require('js-big-decimal');
 
 interface CoinModelProps {
     action: CoinSide;
@@ -138,7 +139,11 @@ export const CoinFlipSettings: FC<CoinFlipSettingsProps> = props => {
         playAnimation,
         setPlayAnimation,
         Won,
-        setWon
+        setWon,
+        totalGain,
+        setTotalGain,
+        totalLoss,
+        setTotalLoss
     ] = useUnit([
         CoinFlipModel.$BetsAmount,
         CoinFlipModel.$BetsAmountInt,
@@ -153,7 +158,11 @@ export const CoinFlipSettings: FC<CoinFlipSettingsProps> = props => {
         CoinFlipModel.$PlayAnimation,
         CoinFlipModel.setPlayAnimation,
         CoinFlipModel.$Won,
-        CoinFlipModel.setWon
+        CoinFlipModel.setWon,
+        CoinFlipModel.$TotalGain,
+        CoinFlipModel.setTotalGain,
+        CoinFlipModel.$TotalLoss,
+        CoinFlipModel.setTotalLoss
     ]);
 
 
@@ -199,6 +208,13 @@ export const CoinFlipSettings: FC<CoinFlipSettingsProps> = props => {
 
             const types = CoinFlipAbi[13].inputs;
             const decodedParameters: any = web3Utils.eth.abi.decodeLog(types, event.data, event.topics);
+            let total_wager: bigint = decodedParameters.numGames as bigint * decodedParameters.wager as bigint;
+            let payout: bigint = decodedParameters.payout;
+            let loss: bigint = total_wager - payout;
+            console.log(payout);
+            console.log(loss);
+            setTotalGain(payout);
+            setTotalLoss(loss);
             if (pickedSide.valueOf() == decodedParameters.coinOutcomes[0] as number) {
                 console.log("You won!");
             } else {
@@ -220,11 +236,11 @@ export const CoinFlipSettings: FC<CoinFlipSettingsProps> = props => {
 
         let allowance = await tokenContract.allowance(sessionAddress, CoinFlipAddress);
 
-        if (allowance < (WagerNum * BetsAmountInt)) {
-            await tokenContract.approve(CoinFlipAddress, WagerNum * BetsAmountInt * 10);
+        if (allowance < (WagerNum * BigInt(BetsAmountInt))) {
+            await tokenContract.approve(CoinFlipAddress, WagerNum * BigInt(BetsAmountInt * 10));
         }
 
-        await coinflip_contract.CoinFlip_Play(WagerNum, tokenAddress, pickedSide, BetsAmountInt, 1000000, 1000000, { value: 3000000000000000, gasLimit: 400000, gasPrice: 2500000256 });
+        await coinflip_contract.CoinFlip_Play(WagerNum, tokenAddress, pickedSide, BetsAmountInt, 100000000000000, 100000000000000, { value: 3000000000000000, gasLimit: 3000000, gasPrice: 2500000256 });
 
         resultsPending = true;
     }
@@ -255,7 +271,7 @@ export const CoinFlipSettings: FC<CoinFlipSettingsProps> = props => {
                         inputMode="numeric"
                         placeholder="1"
                         pattern="[0-9]*"
-                        max='100'
+                        max='10'
                         value={BetsAmount}
                         onChange={changeBets}
                     ></input>
@@ -264,7 +280,7 @@ export const CoinFlipSettings: FC<CoinFlipSettingsProps> = props => {
                         height: 0,
                     }}></div>
                     <div className={s.multiple_bets_slider_container}>
-                        <input type="range" step="1" min="1" max="100" defaultValue='1' value={BetsAmountInt} onChange={changeBets} className={s.slider}></input>
+                        <input type="range" step="1" min="1" max="10" defaultValue='1' value={BetsAmountInt} onChange={changeBets} className={s.slider}></input>
                     </div>
                 </div>
 
@@ -280,6 +296,16 @@ export const CoinFlipSettings: FC<CoinFlipSettingsProps> = props => {
                 <div className={s.stop_loss}></div>
 
                 <div className={s.profit_on_win}></div>
+
+                <div className={s.total_gain_loss} style={{ color: 'green' }}>
+                    <div>Total gain:</div>
+                    <div>{bigDecimal.divide(totalGain.toString(), '1000000000000000000', 4)}</div>
+                </div>
+
+                <div className={s.total_gain_loss} style={{ color: 'red' }}>
+                    <div>Total loss:</div>
+                    <div>{bigDecimal.divide(totalLoss.toString(), '1000000000000000000', 4)}</div>
+                </div>
 
             </div>
 

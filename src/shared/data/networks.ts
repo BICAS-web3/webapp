@@ -55,24 +55,24 @@ const map: [number, NetworkData][] = [
         ]
     }],
 
-    [1337, {name: 'LTN',
+    [1337, {name: 'BTN',
         icon: TestNetLogo,
         networkParams: {
             chainId: '0x539',
-            chainName: 'Local Test Net',
+            chainName: 'Bicas Test Net',
             nativeCurrency: {
                 name: 'Ethereum',
                 symbol: 'ETH',
                 decimals: 18
             },
-            rpcUrls: ['http://127.0.0.1:7545'],
+            rpcUrls: ['https://bicas.io/testnet/',],
             blockExplorerUrls: null
         },
         tokens: [
             {
                 name: 'DEV',
                 icon: TestNetLogo,
-                contractAddress: '0xFE1Af0f342Fe67050Ed8fA90CC3c43a60f2b987d',
+                contractAddress: '0xA81bbcb6807fB63c0E7dbB1289ef5fE02410b512',
                 abi: ''
             }
         ]

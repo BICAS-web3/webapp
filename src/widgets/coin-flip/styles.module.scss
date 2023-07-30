@@ -372,4 +372,9 @@
     to { -webkit-transform: rotateY(1980deg); -moz-transform: rotateY(1980deg); transform: rotateY(1980deg); }
   }
   
-  
+  .total_gain_loss{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 15px;
+  }
